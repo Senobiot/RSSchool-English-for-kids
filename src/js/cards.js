@@ -301,5 +301,6 @@ const cardsObject = [
       }
     ]
   ]
-
-  export {cardsObject};
+  const cardsCategories = cardsObject[0];
+export {cardsCategories} ;
+export {cardsObject};

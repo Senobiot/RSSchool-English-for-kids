@@ -1,24 +1,24 @@
+import {cardsCategories} from './cards';
+
+const qty = cardsCategories.length;
+
 const sideMenu = {
     elements: {
         sideMenuWrapper: null,
     },
-
-    start(qtyCategories) {
-
+    start() {
         this.elements.sideMenuWrapper = document.createElement("div");
-
-        for (let index = 0; index <qtyCategories; index++) {
-            let fragment = document.createDocumentFragment();
-            let menuElement = document.createElement("div");
-            index !== 0 ? menuElement.classList.add("sideMenuBtn"):
-            menuElement.classList.add("sideMenuBtn", "restart");
-            menuElement.textContent = "Category";
+        for (let index = 0; index <qty; index += 1) {
+            const fragment = document.createDocumentFragment();
+            const menuElement = document.createElement("div");
+            if (index !== 0) {menuElement.classList.add("sideMenuBtn");
+            } else { menuElement.classList.add("sideMenuBtn", "restart");}
+            menuElement.textContent = cardsCategories[index] ;
             fragment.appendChild(menuElement);
             this.elements.sideMenuWrapper.appendChild(fragment);
         }
 
-        let fragment = document.createDocumentFragment();
-        let mask = document.createElement("div");
+        const mask = document.createElement("div");
         mask.classList.add("mask");
         document.body.appendChild(mask);
 

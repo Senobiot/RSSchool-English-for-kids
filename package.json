@@ -10,6 +10,7 @@
     "dev": "webpack-dev-server --history-api-fallback --inline --open",
     "build": "npm run clear -s && webpack --progress",
     "lint": "eslint ./**/*.js",
+    "lint:fix": "eslint --fix --ext .js,.jsx .",
     "clear": "del-cli dist"
   },
   "author": "Aliaksandr Kulik",
