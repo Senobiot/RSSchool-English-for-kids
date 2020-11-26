@@ -2,9 +2,15 @@ import {cardsObject} from './cards';
 
 const application = {
     elements: {
-        stars: null,
+        statisticPanel: null,
+        statisticBtn: null,
+        statisticMistakesBlock: null,
+        statisticMistakesCounter: null,
+        statisticCorrectBlock: null,
+        statisticCorrectCounter: null,
         content: null,
         cards: [],
+        playRepeatBtn: [],
         cardsPlaySounds: [],
         cardsPlayOrder: [],
         winPopup: null,
@@ -13,6 +19,7 @@ const application = {
         play: false,
         mistakes: 0,
         correctAnswers: 0,
+        step: 0,
     },
 
     start() {
@@ -20,11 +27,40 @@ const application = {
             this.elements.content = null;
             document.body.removeChild(this.elements.content);
         }
+        this.elements.statisticPanel = document.createElement('div');
+        this.elements.statisticPanel.classList.add('statisticPanel');
+
+        this.elements.statisticBtn = document.createElement('button');
+        this.elements.statisticBtn.classList.add('statisticBtn');
+        this.elements.statisticBtn.textContent = 'statistic';
+        
+        this.elements.statisticMistakesBlock = document.createElement('div');
+        this.elements.statisticMistakesBlock.classList.add('statisticMistakesBlock', 'inactive');
+        this.elements.statisticMistakesCounter = document.createElement('div');
+        this.elements.statisticMistakesCounter.classList.add('statisticMistakesCounter');
+        this.elements.statisticMistakesCounter.textContent = this.properties.mistakes;
+        this.elements.statisticMistakesBlock.appendChild(this.elements.statisticMistakesCounter)
+
+        this.elements.statisticCorrectBlock = document.createElement('div');
+        this.elements.statisticCorrectBlock.classList.add('statisticCorrectBlock', 'inactive');
+        this.elements.statisticCorrectCounter = document.createElement('div');
+        this.elements.statisticCorrectCounter.classList.add('statisticCorrectCounter');
+        this.elements.statisticCorrectCounter.textContent = this.properties.correctAnswers;
+        this.elements.statisticCorrectBlock.appendChild(this.elements.statisticCorrectCounter)
+
+        this.elements.statisticPanel.appendChild(this.elements.statisticMistakesBlock);
+        this.elements.statisticPanel.appendChild(this.elements.statisticBtn);
+        this.elements.statisticPanel.appendChild(this.elements.statisticCorrectBlock);
+
+        document.body.appendChild(this.elements.statisticPanel);
 
         this.elements.content = document.createElement('div');
+        this.elements.playRepeatBtn = document.createElement('div');
         this.elements.content.classList.add('content');
-        document.body.appendChild(this.elements.content);
+        this.elements.playRepeatBtn.classList.add('playRepeatBtn', 'inactive');
 
+        document.body.appendChild(this.elements.content);
+        document.body.appendChild(this.elements.playRepeatBtn);
         for (let index = 0; index < cardsObject[0].length; index += 1) {
             const card = document.createElement('div');
             const img = document.createElement('div');
@@ -54,23 +90,24 @@ const application = {
             this.elements.cardsPlaySounds.push(speech);
             if (this.elements.cards[index].classList.contains('cardCategory')) {
                 this.elements.cards[index].classList.remove('cardCategory')};
-            img.addEventListener('click', () => {
-                if(!this.properties.play) {
+            card.addEventListener('click', () => {
+                if(!this.properties.play && !card.classList.contains('rotated')) {
                     speech.currentTime = 0;
                     speech.play();
                 }
             });
-            title.addEventListener('click', () => {
-                if(!this.properties.play) {
-                    speech.currentTime = 0;
-                    speech.play();
-                }
-            });
+            // title.addEventListener('click', () => {
+            //     if(!this.properties.play) {
+            //         speech.currentTime = 0;
+            //         speech.play();
+            //     }
+            // });
 
             img.style.backgroundImage = `url(${cardsObject[category + 1][index].image})`;
             title.innerText = cardsObject[category + 1][index].word;
             rotateBtn.classList.remove('inactive');
-            rotateBtn.addEventListener('click',() => {
+            rotateBtn.addEventListener('click', function (event) {
+                event.stopImmediatePropagation();
                 card.classList.add('rotated');
                 rotateBtn.classList.add('inactive');
                 setTimeout(function(){
@@ -102,50 +139,96 @@ const application = {
     },
     play() {
         this.randomCards();
-        this.properties.play = true;
+        const correct = this.elements.statisticCorrectBlock;
+        const mistake = this.elements.statisticMistakesBlock;
+        const playBtn = this.elements.playRepeatBtn;
         const sounds = this.elements.cardsPlaySounds;
         const randCards = this.elements.cardsPlayOrder;
-        const {cards} = this.elements;
-        let step = 0;
+        const cards = this.elements.cards;
         const endgame = this.win;
-        setTimeout(() => {
-           sounds[randCards[step]].play();
-        }, 1000);     
+        playBtn.classList.remove('inactive');
 
-        for (let index = 0; index < this.elements.cards.length; index+= 1) {
-            this.elements.cards[index].classList.add('play');
-            this.elements.cards[index].addEventListener('click', function() {
-                if (cards.indexOf(this) === randCards[step]) {
-                    this.classList.add('catched');
-                    application.properties.correctAnswers += 1;
-                    if (step < sounds.length - 1) {
-                        step += 1;
-                        setTimeout(() => {
-                        sounds[randCards[step]].play();
-                     }, 1000);   
-                    } else {
-                        endgame();
+        playBtn.addEventListener('click', function startPlayFunc (event){
+            event.stopImmediatePropagation();
+            if (this.classList.contains('playing')) {
+                sounds[randCards[application.properties.step]].play();
+            } else {
+                correct.classList.remove('inactive');
+                mistake.classList.remove('inactive');  
+                for (let index = 0; index < cards.length; index+= 1) {
+                     cards[index].classList.add('play');
+                }
+                this.classList.add('playing');
+                application.properties.play = true;
+                guessFunc ();
+                setTimeout(() => {
+                    sounds[randCards[0]].play()}, 500);
+            }
+        })
+
+            function guessFunc () {
+                for (let index = 0; index < cards.length; index+= 1) {
+                    cards[index].addEventListener('click', function (event) {
+                        event.stopImmediatePropagation();
+                    if (cards.indexOf(this) === randCards[application.properties.step] && this.classList.contains("play")) {
+                        application.properties.correctAnswers += 1;
+                        application.elements.statisticCorrectCounter.innerText = application.properties.correctAnswers;
+                        this.classList.add('catched');
+                        if (application.properties.step < sounds.length - 1) {
+                            application.properties.step += 1;
+                            let star = document.createElement('div')
+                            star.classList.add('star');
+                            application.elements.statisticCorrectBlock.appendChild(star)
+                            setTimeout(() => {
+                            sounds[randCards[application.properties.step]].play();
+                        }, 1000);   
+                        } else {
+                            endgame();
                     }
-                } else {application.properties.mistakes += 1}
-            })
-        }
+                } else {
+                    application.properties.mistakes += 1;
+                    application.elements.statisticMistakesCounter.innerText = application.properties.mistakes;
+                    let star = document.createElement('div')
+                    star.classList.add('greyStar');
+                    application.elements.statisticMistakesBlock.appendChild(star)
+                }
+            })}
+            }
     },
     train() {
         this.properties.play = false;
         this.elements.cardsPlayOrder = [];
+        this.properties.step = 0;
+        this.properties.mistakes = 0;
+        this.properties.correctAnswers = 0;
+        this.elements.statisticCorrectCounter.innerText = this.properties.correctAnswers;
+        this.elements.statisticMistakesCounter.innerText = this.properties.mistakes;
+        this.elements.playRepeatBtn.classList.add('inactive');
+        this.elements.playRepeatBtn.classList.remove('playing');
+        this.elements.statisticCorrectBlock.classList.add('inactive');
+        this.elements.statisticMistakesBlock.classList.add('inactive');
         for (let index = 0; index < this.elements.cards.length; index+= 1) {
             this.elements.cards[index].classList.remove('play', 'catched');
-        }
+         }
+         while (this.elements.statisticCorrectBlock.childNodes.length > 1) {
+            this.elements.statisticCorrectBlock.removeChild(this.elements.statisticCorrectBlock.lastChild);
+         }
+         while (this.elements.statisticMistakesBlock.childNodes.length > 1) {
+            this.elements.statisticMistakesBlock.removeChild(this.elements.statisticMistakesBlock.lastChild);
+         }
     },
     win() {
         const content = document.querySelector('.content');
-        content.classList.add('disappear');
+        application.properties.step = 0;
+        application.elements.playRepeatBtn.classList.remove('playing');
+        application.elements.playRepeatBtn.classList.add('inactive');
+        setTimeout(() => {
+           content.classList.add('disappear'); 
+        }, 1000);
         const winpopup = document.createElement('div');
         application.properties.mistakes > 1 ? winpopup.classList.add('winner') : winpopup.classList.add('loser')
         document.body.appendChild(winpopup);
-        console.log(application.properties.mistakes)
-        console.log(application.properties.correctAnswers)
-    }
+    },
 }
 
 

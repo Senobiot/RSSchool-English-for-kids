@@ -50,6 +50,44 @@ body {
     }
 }
 
+.statisticPanel {
+    width: 80%;
+    margin: 0 auto 20px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    transition: 0.3s;
+
+    .statisticBtn {
+        width: 12%;
+        background-color: cornflowerblue;
+    }
+    .statisticCorrectBlock, .statisticMistakesBlock  {
+        display: flex;
+        flex-shrink:0;
+        overflow: hidden;
+        width: 44%;
+        &.inactive {
+            opacity: 0;
+        }
+    }
+    .statisticMistakesCounter, .statisticCorrectCounter {
+        font-size: 40px;
+        min-width: 50px;
+
+    }
+    .statisticMistakesBlock {
+        justify-content: end;
+        flex-direction: row-reverse;
+    }
+    .star, .greyStar {
+        min-width: 40px;
+        height: 40px;
+        margin: 0 5px;
+        background-color: crimson;
+    }
+}
 
 .sideMenuWrapper {
     position: fixed;
@@ -222,10 +260,43 @@ body {
             }
         }
         &.catched {
+            pointer-events: none;
             filter: grayscale(100%);
         }
     }
 }
+.playRepeatBtn {
+    width: 100px;
+    height: 50px;
+    border: 1px solid #000;
+    background-color: coral;
+    margin: 50px auto 0;
+    position: relative;
+    transition: 0.3s;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    &:before {
+        content: 'start';
+    }
+    &.playing {
+        &:before {
+            content: 'repeat word';
+        }
+    }
+    &.inactive {  
+        transform: scale(0);
+    }
+}
+.winner {
+    width: 80%;
+    height: 40%;
+    position: fixed;
+    left: calc(10%);
+    top: 45%;
+    background-color: yellow;
+}
+
 @keyframes rotateContent {
     0%{opacity: 1;}
     25%{opacity: 0;}
