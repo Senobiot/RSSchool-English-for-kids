@@ -16,7 +16,7 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 }
 
 .header {
-    padding-top: 100px;
+    padding-top: 50px;
     display: flex;
     justify-content: space-between;
     margin: 0 auto 100px;
@@ -34,31 +34,37 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 
 .burgerBtn {
     position: relative;
-    border: 1px solid #fff;
-    width: 40px;
+    width: 60px;
     height: 40px;
     z-index: 10;
     transition: all 1s;
     cursor: pointer;
     div {
         width: 100%;
-        height: 4px;
-        background-color: red;
+        height: 6px;
+        border-radius: 5px;
+        background-color: #d55949;;
         position: absolute;
-        
+        transition: 1s; 
         &:nth-child(2) {
-            top: calc(50% - 2px);
-            transition: 1s;
+            top: calc(50% - 3px);    
         }
         &:last-child {
             bottom: 0;
         }
     }
     &.active {
-        transform: rotate(90deg);
+        transform: translate(240px, -30px);
+        div:nth-child(1) {
+            transform: rotate(45deg) translateY(24px);
+        }
         div:nth-child(2) {
         transform: rotate(540deg);
+        opacity: 0;
         }
+        div:nth-child(3) {
+            transform: rotate(-45deg) translateY(-24px);
+            }
     }
 }
 
@@ -70,8 +76,7 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     justify-content: center;
     text-align: center;
     transition: 0.3s;
-
-    .statisticBtn, .playRepeatBtn {
+    .statisticBtn, .playRepeatBtn, .statisticCategories {
         width: 12%;
         background-color: rgba(213, 89, 73, 1);
         font-weight: 700;
@@ -93,6 +98,7 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     }
     .statisticCorrectBlock, .statisticMistakesBlock  {
         display: flex;
+        align-items: center;
         flex-shrink:0;
         overflow: hidden;
         width: 44%;
@@ -102,18 +108,31 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     }
     .statisticMistakesCounter, .statisticCorrectCounter {
         font-size: 40px;
-        min-width: 50px;
+        min-width: 75px;
+        font-family: $font_3;
+        // color: rgba(213, 89, 73, 0.8);
+        color: #b64242;
+        font-size: 50px;
+        font-weight: 700;
+        // text-shadow: 0px 0px 9px rgba(213, 89, 73, 0.8);
 
     }
     .statisticMistakesBlock {
         justify-content: end;
         flex-direction: row-reverse;
+        opacity: 0.4;
+    }
+    .statisticMistakesCounter {
+          color: #000;
     }
     .star, .starGrey {
         min-width: 40px;
         height: 40px;
         margin: 0 5px;
-        background-color: crimson;
+        background: url("../img/strawberry2.png") 50%/contain;
+    }
+    .starGrey {
+        background: url("../img/poop2.png") 50%/contain;
     }
 }
 
@@ -123,12 +142,21 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     top: 0;
     transform: scaleX(0);
     transform-origin: left;
-    width: 50%;
+    width: 30%;
     min-width: 320px;
     height: 100vh;
-    background-color: darkblue;
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    border-radius: 0 3% 3% 0;
+    box-shadow:
+    inset rgba(0,0,0,.5) -3px -3px 8px,
+    inset rgba(255,255,255,.9) 3px 3px 8px,
+    rgba(0,0,0,.8) 3px 3px 8px -3px;
+    font-family: $font_1;;
     color: #fff;
-    font-size: 40px;
+    text-shadow: 0px 0px 9px rgba(0, 0, 0, 1);
+    letter-spacing: 4px;
+    font-size: 50px;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -137,10 +165,19 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     transition: 1s;
     .sideMenuBtn {
         cursor: pointer;
-        line-height: 2;
+        line-height: 1.5;
         &:hover {
-            color: green;
+            color: #d55949;
+            font-weight: 900;
             transition: all 0.3s;
+            text-shadow: none;
+            animation: menuBtnHover 0.3s infinite;
+        }
+        @keyframes menuBtnHover {
+            25% {transform: translateX(10px);}
+            50% {transform: translateX(0px);}
+            75% {transform: translateX(-10px);}
+            100% {transform: translateX(0px);}
         }
     }
     &.active {
@@ -165,16 +202,18 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 	appearance: none;
 	width: 56px;
 	height: 20px;
-	background: #f2f2f2;
+	// background: #f2f2f2;
 	border-radius: 25px;
-	border: 2px solid #d2d2d2;
+	border: 2px solid #fff;
     transition: 0.2s;
     transform: scale(2.5);
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
     font-size: 0.6em;
-    font-family: Arial, serif;
+    letter-spacing: 2px;
+    font-family: $font_5;
+    color: #fff;
 	&:focus {
 		outline: none;
     }
@@ -205,8 +244,8 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
             left: 5px;
             color: #fff;
         }
-		background: lighten(slategray, 13);
-		border-color: slategray;
+		background:  #d55949;
+		border-color: #d55949;
 		&:after {
 			left: 35px;
 			box-shadow: -1px 0 5px -1px rgba(0, 0, 0, 0.2);
@@ -243,6 +282,9 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 		inset rgba(0,0,0,.5) -3px -3px 8px,
 		inset rgba(255,255,255,.9) 3px 3px 8px,
         rgba(0,0,0,.8) 3px 3px 8px -3px;
+        &:hover {
+            filter: hue-rotate(-151deg);
+        }
         @keyframes hoverCard {
             25%{transform: rotate(2deg);}
             50%{transform: rotate(0deg)}
@@ -393,9 +435,11 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 	left: 0;
 	color: rgba(255,255,255,.7);
 	font-size: 16px;
-	font-family: 'Paytone One', sans-serif;
-	background: linear-gradient(45deg, rgba(28,94,125, 1) 33%, rgba(28,94,125, 1) 66%, #8AA9D6);
-	transition: all 0.4s;
+    font-family: $font_5;
+    text-transform: uppercase;
+	background: #61517b;
+    transition: all 0.4s;
+    text-shadow: 0 0 9px #000;
 	&.inactive {
 		transform: scale(0);
 		top: -100%;
@@ -406,18 +450,31 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 	width: 100%;
 	height: 10%;
 	align-items: center;
-	justify-content: space-around;
+    justify-content: space-around;
+    font-size: 30px;
 	.statisticCategoriesBtn {
-		background-color: rgba(56,120,140, 0.9);
-		box-shadow: 2px 2px 10px #cacaca;
-		padding: 6px;
-		border-radius: 6px;
-		cursor: pointer;
-		transition: all 0.3s;
-		font-size: 16px;
-		&:hover {
-			transform: rotate(360deg)
-		}
+        width: 12%;
+        line-height: 2;
+        background-color: rgba(213, 89, 73, 1);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-family: $font_5;
+        font-size: 16px;
+        color: #fff;
+        cursor: pointer;
+        transition: 1s;
+        border-radius: 3%;
+        overflow: hidden;
+        box-shadow:
+		inset rgba(0,0,0,.5) -3px -3px 8px,
+		inset rgba(255,255,255,.9) 3px 3px 8px,
+        rgba(0,0,0,.8) 3px 3px 8px -3px;
+        &:hover {
+               font-weight: 900;
+            transition: all 0.3s;
+            text-shadow: none;
+            animation: menuBtnHover 0.3s infinite;
+        }
 	}
 }
 .statisticGrid {
@@ -425,21 +482,19 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 }
 
 .word, .statisticHeader {
-	height: 10%;
+    font-size: 24px;
+	height: 12%;
 	display: grid;
     grid-column-gap: 5%;
-    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr;
+    grid-template-columns: 3fr 3fr 2fr 2fr 2fr 2fr;
     -webkit-tap-highlight-color: transparent;
     justify-items: center;
     align-items: center;
     border-top: 3px solid rgba(255,255, 255, 0.4);
 }
 .statisticHeader {
+    background-color: rgba(213, 89, 73, 1);
 	height: 5%;
-	font-size: 16px;
-}
-.word {
-	div:nth-child(4) {
-		font-size: 24px;
-	}
+    font-size: 16px;
+    font-weight: 900;
 }

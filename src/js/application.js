@@ -128,6 +128,7 @@ const application = {
                 rotateBtn.classList.add('inactive');
                 setTimeout(function(){
                     title.innerText = cardsObject[category][index].translation;
+                    img.style.transform = 'rotateY(180deg)'
                     title.style.transform = 'rotateY(180deg)'
                     }, 300)
             });
@@ -135,6 +136,8 @@ const application = {
             if (this.firstChild.classList.contains('rotated'))
                 setTimeout(function(){
                     title.innerText = cardsObject[category][index].word
+                    img.style.transform = 'none';
+                    img.style.transform = null;
                     title.style.transform = 'none';
                     title.style.transform = null;
                     }, 1300)
@@ -255,7 +258,7 @@ const application = {
                         document.querySelector(".statistic").remove();	
                         this.elements.statistic = null;
                         this.getStatistic(i, true)
-                        document.querySelector(".statisticTitle").textContent = `Your statistic on ${categories[i]} category`;
+                        document.querySelector(".statisticTitle").textContent = `Your statistic in ${categories[i]} category`;
                     })
                     statisticCategories.appendChild(menuElement);
             }
@@ -272,7 +275,7 @@ const application = {
                     i === 2 ? menuElement.textContent = "trained":
                     i === 3 ? menuElement.textContent = "correct":
                     i === 4 ? menuElement.textContent = "mistakes":
-                    menuElement.textContent = "hints";
+                    menuElement.textContent = "hits, %";
                     statisticHeader.appendChild(menuElement);
             }
             fragment.appendChild(statisticHeader);

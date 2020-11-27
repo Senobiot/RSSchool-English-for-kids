@@ -23,7 +23,7 @@ const mask = document.querySelector('.mask');
 const correctAudio = new Audio;
 const mistakeAudio = new Audio;
 correctAudio.src = './audio/correct2.mp3';
-mistakeAudio.src = './audio/mistake.mp3';
+mistakeAudio.src = './audio/fart.mp3';
 
 
 burgerBtn.addEventListener('click', () => {
@@ -56,8 +56,8 @@ for (let index = 0; index < sideMenuBtns.length; index+= 1) {
 
 for (let index = 0; index < cards.length; index+= 1) {
   cardWrapperS[index].addEventListener('mouseleave', function (){
-    if (this.firstChild.classList.contains('rotated'))
-    setTimeout(() => {
+    if (this.firstChild.classList.contains('rotated')) {
+      setTimeout(() => {
       this.firstChild.classList.remove('rotated'); 
       this.style.animation = 'rotateCard 1s reverse forwards'
     }, 600)
@@ -65,7 +65,8 @@ for (let index = 0; index < cards.length; index+= 1) {
         this.style.animation = 'none';
         this.style.animation = null;
         rotateBtnS[index].classList.remove('inactive'); 
-    }, 1600)
+    }, 1600)}
+
   });
 
 
