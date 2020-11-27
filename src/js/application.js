@@ -11,22 +11,21 @@ const application = {
         content: null,
         cards: [],
         playRepeatBtn: [],
-        cardsPlaySounds: [],
-        cardsPlayOrder: [],
+        soundArr: [],
+        randomArr: [],
         winPopup: null,
+        statistic: []
     },
     properties: {
         play: false,
         mistakes: 0,
         correctAnswers: 0,
         step: 0,
+        currentCategory: ''
     },
 
     start() {
-        if (this.elements.content) {
-            this.elements.content = null;
-            document.body.removeChild(this.elements.content);
-        }
+
         this.elements.statisticPanel = document.createElement('div');
         this.elements.statisticPanel.classList.add('statisticPanel');
 
@@ -66,19 +65,51 @@ const application = {
             const img = document.createElement('div');
             const rotateBtn = document.createElement('div');        
             const titleCard = document.createElement('div');
+            const cardWrapper = document.createElement('div');
+
+            
+
+            cardWrapper.classList.add("cardWrapper");
             titleCard.textContent = cardsObject[0][index];
-            card.classList.add('card', 'cardCategory');        
+            card.classList.add('card');        
             img.classList.add('cardImg');
             titleCard.classList.add('cardTitle');
             rotateBtn.classList.add('cardRotateBtn', 'inactive');
             card.appendChild(img);
             card.appendChild(titleCard);
             card.appendChild(rotateBtn);
-            this.elements.content.appendChild(card);
+            cardWrapper.appendChild(card);
+            this.elements.content.appendChild(cardWrapper);
             this.elements.cards.push(card);
         }
+        this.createStatistic();
+        this.changeCategory(0);
+    },
+    createStatistic() {
+        if (!localStorage.getItem(cardsObject[0][0])) {
+            for (let i = 1; i <= cardsObject[0].length; i++) {
+                for (let j = 0; j < cardsObject[1].length; j++) {
+                    const statObj = {word: '', translation: '', trained: '', correct: '', mistakes: '', hits: '' };
+                    statObj.word = cardsObject[i][j].word;
+                    statObj.translation = cardsObject[i][j].translation;
+                    statObj.trainded = statObj.trained = statObj.correct = statObj.mistakes = statObj.hits = 0;
+                    this.elements.statistic.push(statObj);
+                }
+                localStorage.setItem(`${cardsObject[0][i - 1]}`, JSON.stringify(this.elements.statistic));
+                this.elements.statistic = []; 
+            }
+        } else {return}
     },
     changeCategory(category) {
+        if (category === 0) {
+            for (let index = 0; index < cardsObject[0].length; index += 1) {
+                this.elements.cards[index].classList.add('cardCategory');
+                this.elements.cards[index].children[0].style.backgroundImage = `url(./img/cat_${index}.jpg)`;
+                this.elements.cards[index].children[1].textContent = cardsObject[category][index];
+            }
+            return
+        }
+        if (this.elements.soundArr.length > 0) this.elements.soundArr = [];
 
         for (let index = 0; index < this.elements.cards.length; index += 1) {
             const card = this.elements.cards[index];
@@ -86,42 +117,27 @@ const application = {
             const title = this.elements.cards[index].children[1];
             const rotateBtn = this.elements.cards[index].children[2];
             const speech = new Audio;
-            speech.src = cardsObject[category + 1][index].audioSrc;
-            this.elements.cardsPlaySounds.push(speech);
-            if (this.elements.cards[index].classList.contains('cardCategory')) {
-                this.elements.cards[index].classList.remove('cardCategory')};
-            card.addEventListener('click', () => {
-                if(!this.properties.play && !card.classList.contains('rotated')) {
-                    speech.currentTime = 0;
-                    speech.play();
-                }
-            });
-            // title.addEventListener('click', () => {
-            //     if(!this.properties.play) {
-            //         speech.currentTime = 0;
-            //         speech.play();
-            //     }
-            // });
+            speech.src = cardsObject[category][index].audioSrc;
+            this.elements.soundArr.push(speech);
 
-            img.style.backgroundImage = `url(${cardsObject[category + 1][index].image})`;
-            title.innerText = cardsObject[category + 1][index].word;
+            if (card.classList.contains('cardCategory')) card.classList.remove('cardCategory');
+
+
+            img.style.backgroundImage = `url(${cardsObject[category][index].image})`;
+            title.innerText = cardsObject[category][index].word;
             rotateBtn.classList.remove('inactive');
             rotateBtn.addEventListener('click', function (event) {
-                event.stopImmediatePropagation();
                 card.classList.add('rotated');
                 rotateBtn.classList.add('inactive');
                 setTimeout(function(){
-                    title.innerText = cardsObject[category + 1][index].translation;
-
+                    title.innerText = cardsObject[category][index].translation;
                     }, 500)
             });
-            card.addEventListener('mouseleave', function (){
-                if (this.classList.contains('rotated'))
+            card.parentElement.addEventListener('mouseleave', function (){
+                if (this.firstChild.classList.contains('rotated'))
                 setTimeout(function(){
-                    card.classList.remove('rotated');
-                    rotateBtn.classList.remove('inactive');
                     setTimeout(function(){
-                        title.innerText = cardsObject[category + 1][index].word
+                        title.innerText = cardsObject[category][index].word
                        }, 200)
                 }, 600)   
            });
@@ -132,72 +148,42 @@ const application = {
             return Math.floor(Math.random() * (max - min + 1)) + min; 
         }
 
-        while (this.elements.cardsPlayOrder.length < this.elements.cards.length) {
+        while (this.elements.randomArr.length < this.elements.cards.length) {
             const num = getRandom(0, this.elements.cards.length - 1);
-            if (this.elements.cardsPlayOrder.indexOf(num) === -1) this.elements.cardsPlayOrder.push(num);
+            if (this.elements.randomArr.indexOf(num) === -1) this.elements.randomArr.push(num);
         }
     },
+
     play() {
-        this.randomCards();
-        const correct = this.elements.statisticCorrectBlock;
-        const mistake = this.elements.statisticMistakesBlock;
-        const playBtn = this.elements.playRepeatBtn;
-        const sounds = this.elements.cardsPlaySounds;
-        const randCards = this.elements.cardsPlayOrder;
-        const cards = this.elements.cards;
-        const endgame = this.win;
-        playBtn.classList.remove('inactive');
-
-        playBtn.addEventListener('click', function startPlayFunc (event){
-            event.stopImmediatePropagation();
-            if (this.classList.contains('playing')) {
-                sounds[randCards[application.properties.step]].play();
-            } else {
-                correct.classList.remove('inactive');
-                mistake.classList.remove('inactive');  
-                for (let index = 0; index < cards.length; index+= 1) {
-                     cards[index].classList.add('play');
-                }
-                this.classList.add('playing');
-                application.properties.play = true;
-                guessFunc ();
-                setTimeout(() => {
-                    sounds[randCards[0]].play()}, 500);
-            }
-        })
-
-            function guessFunc () {
-                for (let index = 0; index < cards.length; index+= 1) {
-                    cards[index].addEventListener('click', function (event) {
-                        event.stopImmediatePropagation();
-                    if (cards.indexOf(this) === randCards[application.properties.step] && this.classList.contains("play")) {
-                        application.properties.correctAnswers += 1;
-                        application.elements.statisticCorrectCounter.innerText = application.properties.correctAnswers;
-                        this.classList.add('catched');
-                        if (application.properties.step < sounds.length - 1) {
-                            application.properties.step += 1;
-                            let star = document.createElement('div')
-                            star.classList.add('star');
-                            application.elements.statisticCorrectBlock.appendChild(star)
-                            setTimeout(() => {
-                            sounds[randCards[application.properties.step]].play();
-                        }, 1000);   
-                        } else {
-                            endgame();
-                    }
-                } else {
-                    application.properties.mistakes += 1;
-                    application.elements.statisticMistakesCounter.innerText = application.properties.mistakes;
-                    let star = document.createElement('div')
-                    star.classList.add('greyStar');
-                    application.elements.statisticMistakesBlock.appendChild(star)
-                }
-            })}
-            }
+        this.randomCards();       
+        for (let index = 0; index < this.elements.cards.length; index += 1) {
+            this.elements.cards[index].classList.add('play');
+         }
+        this.elements.playRepeatBtn.classList.remove('inactive');
+        this.elements.statisticMistakesBlock.classList.remove('inactive');
+        this.elements.statisticCorrectBlock.classList.remove('inactive');     
     },
+
+    guess() {
+        let star = document.createElement('div');
+        star.classList.add('star');
+        this.properties.step += 1;
+        this.properties.correctAnswers += 1;
+        this.elements.statisticCorrectBlock.appendChild(star);
+        this.elements.statisticCorrectCounter.innerText = this.properties.correctAnswers;
+    },
+
+    noGuess() {
+        let star = document.createElement('div');
+        star.classList.add('starGrey');
+        this.properties.mistakes += 1;
+        this.elements.statisticMistakesBlock.appendChild(star);
+        this.elements.statisticMistakesCounter.innerText = this.properties.mistakes;
+    },
+
     train() {
         this.properties.play = false;
-        this.elements.cardsPlayOrder = [];
+        this.elements.randomArr = [];
         this.properties.step = 0;
         this.properties.mistakes = 0;
         this.properties.correctAnswers = 0;
@@ -218,21 +204,111 @@ const application = {
          }
     },
     win() {
-        const content = document.querySelector('.content');
-        application.properties.step = 0;
-        application.elements.playRepeatBtn.classList.remove('playing');
-        application.elements.playRepeatBtn.classList.add('inactive');
+        this.properties.step = 0;
+        this.properties.play = false;
+        this.elements.playRepeatBtn.classList.remove('playing');
+        this.elements.playRepeatBtn.classList.add('inactive');
         setTimeout(() => {
-           content.classList.add('disappear'); 
+            this.elements.content.classList.add('disappear');
         }, 1000);
         const winpopup = document.createElement('div');
-        application.properties.mistakes > 1 ? winpopup.classList.add('winner') : winpopup.classList.add('loser')
-        document.body.appendChild(winpopup);
+        if (this.properties.mistakes === 0) {
+            winpopup.classList.add('winpopup', 'winner');
+            winpopup.textContent = `Congratulation! You haven't made any mistakes!`;
+        } else {
+            winpopup.classList.add('winpopup', 'loser');
+            winpopup.textContent = `Not bad, but you made ${this.properties.mistakes} mistakes. Try again!`
+        } 
+       
+        setTimeout(() => {
+            document.body.appendChild(winpopup);
+        }, 3000);
+        setTimeout(() => {
+            document.body.removeChild(winpopup);
+            this.elements.content.classList.remove('disappear');
+            this.restart();
+        }, 6000);
     },
+    restart() {
+        document.querySelector('.switcher').checked = false;
+        this.train();
+        this.changeCategory(0);
+    },
+    getStatistic(category, open) {
+        const fragment = document.createDocumentFragment();
+        let statisticTitle = document.createElement("div");
+        statisticTitle.classList.add("statisticTitle")
+        statisticTitle.textContent = `Your statistic on ${cardsObject[0][0]} category`;
+        fragment.appendChild(statisticTitle);
+  
+        let statisticCategories = document.createElement("div");
+        statisticCategories.classList.add("statisticCategories")
+        let categories = cardsObject[0];
+            for (let i = 0; i <= categories.length - 1; i++) {
+                    const menuElement = document.createElement("div");
+                    menuElement.classList.add("statisticCategoriesBtn");
+                    menuElement.textContent = categories[i];
+                    menuElement.addEventListener('click', ()=> {
+                        document.querySelector(".statistic").remove();	
+                        this.elements.statistic = null;
+                        this.getStatistic(i, true)
+                        document.querySelector(".statisticTitle").textContent = `Your statistic on ${categories[i]} category`;
+                    })
+                    statisticCategories.appendChild(menuElement);
+            }
+  
+            fragment.appendChild(statisticCategories);
+  
+        let statisticHeader = document.createElement("div");	
+            statisticHeader.classList.add("statisticHeader");
+           
+          for (let i = 0; i <= 5; i++) {
+                    const menuElement = document.createElement("div");
+                    i === 0 ? menuElement.textContent = "word":
+                    i === 1 ? menuElement.textContent = "translation":
+                    i === 2 ? menuElement.textContent = "trained":
+                    i === 3 ? menuElement.textContent = "correct":
+                    i === 4 ? menuElement.textContent = "mistakes":
+                    menuElement.textContent = "hints";
+                    statisticHeader.appendChild(menuElement);
+            }
+            fragment.appendChild(statisticHeader);
+
+        let statisticGrid = document.createElement("div");
+            statisticGrid.classList.add("statisticGrid");
+        let statisticArray = JSON.parse(localStorage.getItem(categories[category]));
+  
+            for (let i = 0; i < this.elements.cards.length ; i++) {
+                const menuElement = document.createElement("div");
+                menuElement.classList.add("word");
+                for (let j = 0; j <= 5; j++) {
+                    let cell = document.createElement("div");
+                    if (j === 0) cell.textContent = statisticArray[i].word;
+                    if (j === 1) cell.textContent = statisticArray[i].translation;
+                    if (j === 2) cell.textContent = statisticArray[i].trained;
+                    if (j === 3) cell.textContent = statisticArray[i].correct;
+                    if (j === 4) cell.textContent = statisticArray[i].mistakes;
+                    if (j === 5) {
+                        let hint = statisticArray[i].mistakes + statisticArray[i].correct;
+                        if (hint > 0) {
+                            cell.textContent = ((statisticArray[i].mistakes / hint)*100).toFixed(2);
+                        }  else {
+                            cell.textContent = 0};
+                    } 
+                    menuElement.appendChild(cell);
+                }
+                statisticGrid.appendChild(menuElement);
+            }
+  
+            fragment.appendChild(statisticGrid) 
+ 
+          this.elements.statistic = document.createElement("div");
+          if (open) {this.elements.statistic.classList.add("statistic")}
+              else {this.elements.statistic.classList.add("statistic", "inactive")};
+          this.elements.statistic.appendChild(fragment);
+          this.elements.content.appendChild(this.elements.statistic);
+  
+        },
 }
-
-
-
-
 
 export {application};

@@ -8,11 +8,14 @@ const sideMenu = {
     },
     start() {
         this.elements.sideMenuWrapper = document.createElement("div");
+        const backBtn = document.createElement("div");
+        backBtn.classList.add("sideMenuBtn", "restart");
+        backBtn.textContent = `Return to Menu`;
+        this.elements.sideMenuWrapper.appendChild(backBtn);
         for (let index = 0; index <qty; index += 1) {
             const fragment = document.createDocumentFragment();
             const menuElement = document.createElement("div");
-            if (index !== 0) {menuElement.classList.add("sideMenuBtn");
-            } else { menuElement.classList.add("sideMenuBtn", "restart");}
+            menuElement.classList.add("sideMenuBtn");
             menuElement.textContent = cardsCategories[index] ;
             fragment.appendChild(menuElement);
             this.elements.sideMenuWrapper.appendChild(fragment);

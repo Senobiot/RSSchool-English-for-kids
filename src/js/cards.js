@@ -299,6 +299,106 @@ const cardsObject = [
         image: './img/laugh.jpg',
         audioSrc: './audio/laugh.mp3'
       }
+    ],
+    [
+      {
+        word: 'a',
+        translation: 'грустный',
+        image: './img/sad.jpg',
+        audioSrc: './audio/sad.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'сердитый',
+        image: './img/angry.jpg',
+        audioSrc: './audio/angry.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'счастливый',
+        image: './img/happy.jpg',
+        audioSrc: './audio/happy.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'уставший',
+        image: './img/tired.jpg',
+        audioSrc: './audio/tired.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'удивлённый',
+        image: './img/surprised.jpg',
+        audioSrc: './audio/surprised.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'испуганный',
+        image: './img/scared.jpg',
+        audioSrc: './audio/scared.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'улыбка',
+        image: './img/smile.jpg',
+        audioSrc: './audio/smile.mp3'
+      },
+      {
+        word: 'a',
+        translation: 'смех',
+        image: './img/laugh.jpg',
+        audioSrc: './audio/laugh.mp3'
+      }
+    ],
+    [
+      {
+        word: 'b',
+        translation: 'грустный',
+        image: './img/sad.jpg',
+        audioSrc: './audio/sad.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'сердитый',
+        image: './img/angry.jpg',
+        audioSrc: './audio/angry.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'счастливый',
+        image: './img/happy.jpg',
+        audioSrc: './audio/happy.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'уставший',
+        image: './img/tired.jpg',
+        audioSrc: './audio/tired.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'удивлённый',
+        image: './img/surprised.jpg',
+        audioSrc: './audio/surprised.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'испуганный',
+        image: './img/scared.jpg',
+        audioSrc: './audio/scared.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'улыбка',
+        image: './img/smile.jpg',
+        audioSrc: './audio/smile.mp3'
+      },
+      {
+        word: 'b',
+        translation: 'смех',
+        image: './img/laugh.jpg',
+        audioSrc: './audio/laugh.mp3'
+      }
     ]
   ]
   const cardsCategories = cardsObject[0];
