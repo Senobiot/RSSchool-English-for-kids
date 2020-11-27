@@ -31,4 +31,4 @@ const sideMenu = {
     }
 
 }
-export {sideMenu};
+export default sideMenu;

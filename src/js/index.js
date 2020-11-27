@@ -2,9 +2,9 @@
 import '../css/reset.css';
 import '../css/style.css';
 import '../css/style.scss';
-import {header} from './header';
-import {sideMenu} from './side_menu';
-import {application} from './application';
+import header from './header';
+import sideMenu from './side_menu';
+import application from './application';
 
 sideMenu.start()
 application.start(0);
@@ -15,7 +15,7 @@ const sideMenuBtns = document.querySelectorAll('.sideMenuBtn');
 const cards = document.querySelectorAll('.card');
 const rotateBtnS = document.querySelectorAll('.cardRotateBtn');
 const cardWrapperS =  document.querySelectorAll('.cardWrapper');
-const cardTitleS = document.querySelectorAll('.cardTitle');
+// const cardTitleS = document.querySelectorAll('.cardTitle');
 const playRepeatBtn = document.querySelector('.playRepeatBtn');
 const switcher =  document.querySelector('.switcher');
 const {body} = document;
@@ -69,16 +69,13 @@ for (let index = 0; index < cards.length; index+= 1) {
 
   });
 
-
   cards[index].addEventListener('click',function () {
     if (this.classList.contains('cardCategory')) {
       application.properties.currentCategory = this.children[1].textContent;
       application.changeCategory(index + 1);
-    } else {
-      if (playRepeatBtn.classList.contains('inactive') && !this.classList.contains('rotated')) {
-        let localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+    } else if (playRepeatBtn.classList.contains('inactive') && !this.classList.contains('rotated')) {
+        const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
         localData[index].trained += 1;   
-        console.log(`trained`)
         localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
           application.elements.soundArr[index].currentTime = 0;
           application.elements.soundArr[index].play();
@@ -87,7 +84,7 @@ for (let index = 0; index < cards.length; index+= 1) {
           if (index === application.elements.randomArr[application.properties.step]) {
             application.guess();
             correctAudio.play();
-            let localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+            const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
             localData[index].correct += 1;   
             localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
             this.classList.add('catched');
@@ -99,14 +96,13 @@ for (let index = 0; index < cards.length; index+= 1) {
               application.elements.soundArr[application.elements.randomArr[application.properties.step]].play();
             }, 1000)
           } else {
-            let localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+            const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
             localData[application.elements.randomArr[application.properties.step]].mistakes += 1;  
             localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
             mistakeAudio.play();
             application.noGuess();
           }
-         }
-      } 
+         } 
   })
 }
 

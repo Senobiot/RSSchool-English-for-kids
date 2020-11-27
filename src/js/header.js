@@ -29,7 +29,7 @@ header.appendChild(switcher);
 
 document.body.appendChild(header);
 
-export {header}
+export default header;
 
 
 

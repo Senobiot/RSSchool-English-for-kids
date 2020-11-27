@@ -85,18 +85,22 @@ const application = {
     },
     createStatistic() {
         if (!localStorage.getItem(cardsObject[0][0])) {
-            for (let i = 1; i <= cardsObject[0].length; i++) {
-                for (let j = 0; j < cardsObject[1].length; j++) {
+            for (let i = 1; i <= cardsObject[0].length; i += 1) {
+                for (let j = 0; j < cardsObject[1].length; j += 1) {
                     const statObj = {word: '', translation: '', trained: '', correct: '', mistakes: '', hits: '' };
                     statObj.word = cardsObject[i][j].word;
                     statObj.translation = cardsObject[i][j].translation;
-                    statObj.trainded = statObj.trained = statObj.correct = statObj.mistakes = statObj.hits = 0;
+                    statObj.trainded = 0;
+                    statObj.trained = 0;
+                    statObj.correct = 0;
+                    statObj.mistakes = 0;
+                    statObj.hits = 0;
                     this.elements.statistic.push(statObj);
                 }
                 localStorage.setItem(`${cardsObject[0][i - 1]}`, JSON.stringify(this.elements.statistic));
                 this.elements.statistic = []; 
             }
-        } else {return}
+        } 
     },
     changeCategory(category) {
         if (category === 0) {
@@ -123,7 +127,7 @@ const application = {
             img.style.backgroundImage = `url(${cardsObject[category][index].image})`;
             title.innerText = cardsObject[category][index].word;
             rotateBtn.classList.remove('inactive');
-            rotateBtn.addEventListener('click', function (event) {
+            rotateBtn.addEventListener('click', function () {
                 card.classList.add('rotated');
                 rotateBtn.classList.add('inactive');
                 setTimeout(function(){
@@ -166,7 +170,7 @@ const application = {
     },
 
     guess() {
-        let star = document.createElement('div');
+        const star = document.createElement('div');
         star.classList.add('star');
         this.properties.step += 1;
         this.properties.correctAnswers += 1;
@@ -175,7 +179,7 @@ const application = {
     },
 
     noGuess() {
-        let star = document.createElement('div');
+        const star = document.createElement('div');
         star.classList.add('starGrey');
         this.properties.mistakes += 1;
         this.elements.statisticMistakesBlock.appendChild(star);
@@ -233,8 +237,8 @@ const application = {
     restart() {
         document.querySelector('.switcher').checked = false;
         this.train();
-        let rotateButtons = document.querySelectorAll('.cardRotateBtn')
-        for (let index = 0; index < rotateButtons.length; index++) {
+        const rotateButtons = document.querySelectorAll('.cardRotateBtn')
+        for (let index = 0; index < rotateButtons.length; index += 1) {
             rotateButtons[index].classList.add('inactive');
             
         }
@@ -242,15 +246,15 @@ const application = {
     },
     getStatistic(category, open) {
         const fragment = document.createDocumentFragment();
-        let statisticTitle = document.createElement("div");
+        const statisticTitle = document.createElement("div");
         statisticTitle.classList.add("statisticTitle")
         statisticTitle.textContent = `Your statistic on ${cardsObject[0][0]} category`;
         fragment.appendChild(statisticTitle);
   
-        let statisticCategories = document.createElement("div");
+        const statisticCategories = document.createElement("div");
         statisticCategories.classList.add("statisticCategories")
-        let categories = cardsObject[0];
-            for (let i = 0; i <= categories.length - 1; i++) {
+        const categories = cardsObject[0];
+            for (let i = 0; i <= categories.length - 1; i += 1) {
                     const menuElement = document.createElement("div");
                     menuElement.classList.add("statisticCategoriesBtn");
                     menuElement.textContent = categories[i];
@@ -265,39 +269,39 @@ const application = {
   
             fragment.appendChild(statisticCategories);
   
-        let statisticHeader = document.createElement("div");	
+        const statisticHeader = document.createElement("div");	
             statisticHeader.classList.add("statisticHeader");
            
-          for (let i = 0; i <= 5; i++) {
+          for (let i = 0; i <= 5; i += 1) {
                     const menuElement = document.createElement("div");
-                    i === 0 ? menuElement.textContent = "word":
-                    i === 1 ? menuElement.textContent = "translation":
-                    i === 2 ? menuElement.textContent = "trained":
-                    i === 3 ? menuElement.textContent = "correct":
-                    i === 4 ? menuElement.textContent = "mistakes":
-                    menuElement.textContent = "hits, %";
+                    if (i === 0)  menuElement.textContent = "word";
+                    if (i === 1)  menuElement.textContent = "translation";
+                    if (i === 2)  menuElement.textContent = "trained";
+                    if (i === 3)  menuElement.textContent = "correct";
+                    if (i === 4)  menuElement.textContent = "mistakes";
+                    if (i === 5) menuElement.textContent = "hits, %";
                     statisticHeader.appendChild(menuElement);
             }
             fragment.appendChild(statisticHeader);
 
-        let statisticGrid = document.createElement("div");
+        const statisticGrid = document.createElement("div");
             statisticGrid.classList.add("statisticGrid");
-        let statisticArray = JSON.parse(localStorage.getItem(categories[category]));
+        const statisticArray = JSON.parse(localStorage.getItem(categories[category]));
   
-            for (let i = 0; i < this.elements.cards.length ; i++) {
+            for (let i = 0; i < this.elements.cards.length ; i += 1) {
                 const menuElement = document.createElement("div");
                 menuElement.classList.add("word");
-                for (let j = 0; j <= 5; j++) {
-                    let cell = document.createElement("div");
+                for (let j = 0; j <= 5; j += 1) {
+                    const cell = document.createElement("div");
                     if (j === 0) cell.textContent = statisticArray[i].word;
                     if (j === 1) cell.textContent = statisticArray[i].translation;
                     if (j === 2) cell.textContent = statisticArray[i].trained;
                     if (j === 3) cell.textContent = statisticArray[i].correct;
                     if (j === 4) cell.textContent = statisticArray[i].mistakes;
                     if (j === 5) {
-                        let hint = statisticArray[i].mistakes + statisticArray[i].correct;
+                        const hint = statisticArray[i].mistakes + statisticArray[i].correct;
                         if (hint > 0) {
-                            cell.textContent = ((statisticArray[i].mistakes / hint)*100).toFixed(2);
+                            cell.textContent = ((statisticArray[i].correct / hint)*100).toFixed(2);
                         }  else {
                             cell.textContent = 0};
                     } 
@@ -317,4 +321,4 @@ const application = {
         },
 }
 
-export {application};
+export default application;
