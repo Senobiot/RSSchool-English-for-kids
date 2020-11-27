@@ -1,5 +1,55 @@
 const cardsObject = [ 
-    ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', `category7`, 'category8'],
+    ['Animals (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', `category7`, 'category8'],
+    [
+      {
+        word: 'bear',
+        translation: 'медведь',
+        image: './img/bear.jpg',
+        audioSrc: './audio/bear.mp3'
+      },
+      {
+        word: 'cat',
+        translation: 'кот',
+        image: './img/cat.jpg',
+        audioSrc: './audio/cat.mp3'
+      },
+      {
+        word: 'elephant',
+        translation: 'слон',
+        image: './img/elephant.jpg',
+        audioSrc: './audio/elephant.mp3'
+      },
+      {
+        word: 'elk',
+        translation: 'лось',
+        image: './img/elk.jpg',
+        audioSrc: './audio/elk.mp3'
+      },
+      {
+        word: 'fox',
+        translation: 'лиса',
+        image: './img/fox.jpg',
+        audioSrc: './audio/fox.mp3'
+      },
+      {
+        word: 'pinguin',
+        translation: 'пингвин',
+        image: './img/pinguin.jpg',
+        audioSrc: './audio/pinguin.mp3'
+      },
+      {
+        word: 'monkey',
+        translation: 'обезьяна',
+        image: './img/monkey.jpg',
+        audioSrc: './audio/monkey.mp3'
+      },
+      {
+        word: 'rabbit',
+        translation: 'кролик',
+        image: './img/rabbit.jpg',
+        audioSrc: './audio/rabbit.mp3'
+      }
+    ],
     [
       {
         word: 'cry',
@@ -345,56 +395,6 @@ const cardsObject = [
       },
       {
         word: 'a',
-        translation: 'смех',
-        image: './img/laugh.jpg',
-        audioSrc: './audio/laugh.mp3'
-      }
-    ],
-    [
-      {
-        word: 'b',
-        translation: 'грустный',
-        image: './img/sad.jpg',
-        audioSrc: './audio/sad.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'сердитый',
-        image: './img/angry.jpg',
-        audioSrc: './audio/angry.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'счастливый',
-        image: './img/happy.jpg',
-        audioSrc: './audio/happy.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'уставший',
-        image: './img/tired.jpg',
-        audioSrc: './audio/tired.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'удивлённый',
-        image: './img/surprised.jpg',
-        audioSrc: './audio/surprised.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'испуганный',
-        image: './img/scared.jpg',
-        audioSrc: './audio/scared.mp3'
-      },
-      {
-        word: 'b',
-        translation: 'улыбка',
-        image: './img/smile.jpg',
-        audioSrc: './audio/smile.mp3'
-      },
-      {
-        word: 'b',
         translation: 'смех',
         image: './img/laugh.jpg',
         audioSrc: './audio/laugh.mp3'

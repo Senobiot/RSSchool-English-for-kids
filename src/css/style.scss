@@ -1,6 +1,15 @@
+@import 'fonts.scss';
+
+$font_1: 'smartcaps', sans-serif;
+$font_2: 'KidsAlphabet', sans-serif;
+$font_3: 'Edbindia', sans-serif;
+$font_4: 'mistv', sans-serif;
+$font_5: 'Hangyaboly4GoB', sans-serif;
+
 body {
     position: relative;
-    background-color: #cacaca;
+    background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
     &.block{
         overflow: hidden;
     }
@@ -17,6 +26,9 @@ body {
         text-align: center;
         width: 60%;
         font-size: 60px;
+        font-family: $font_3;;
+        color: #fff;
+        text-shadow: 0px 0px 9px rgba(0, 0, 0, 1);
     }
 }
 
@@ -59,9 +71,25 @@ body {
     text-align: center;
     transition: 0.3s;
 
-    .statisticBtn {
+    .statisticBtn, .playRepeatBtn {
         width: 12%;
-        background-color: cornflowerblue;
+        background-color: rgba(213, 89, 73, 1);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-family: $font_5;
+        font-size: 26px;
+        color: #fff;
+        cursor: pointer;
+        transition: 1s;
+        border-radius: 3%;
+        overflow: hidden;
+        box-shadow:
+		inset rgba(0,0,0,.5) -3px -3px 8px,
+		inset rgba(255,255,255,.9) 3px 3px 8px,
+        rgba(0,0,0,.8) 3px 3px 8px -3px;
+        &:hover {
+            animation: hoverCard 0.2s infinite;
+        }
     }
     .statisticCorrectBlock, .statisticMistakesBlock  {
         display: flex;
@@ -188,8 +216,7 @@ body {
 .content {
     position: relative;
     width: 80%;
-    border: 1px solid #000;
-    margin: 0 auto;
+       margin: 0 auto;
     height: 500px;
     display: flex;
     justify-content: space-between;
@@ -200,63 +227,76 @@ body {
         animation: disappear 2s forwards;
     }
     .cardWrapper {
+        position: relative;
+        perspective: 1000px;
       height: 46%;
       width: 23%;
     }
     .card {
-        position: relative;
         height: 100%;
         width: 100%;
-        border: 1px solid #000;
         cursor: pointer;
         transition: 1s;
-        -webkit-perspective: 400px;
-        perspective: 400px;
-        -webkit-transform-style: preserve-3d; 
-        transform-style: preserve-3d;
-        &:hover {
-            box-shadow: 2px 2px 5px blue;
-            transform: translate(2px, 2px);
+        border-radius: 3%;
+        overflow: hidden;
+        box-shadow:
+		inset rgba(0,0,0,.5) -3px -3px 8px,
+		inset rgba(255,255,255,.9) 3px 3px 8px,
+        rgba(0,0,0,.8) 3px 3px 8px -3px;
+        @keyframes hoverCard {
+            25%{transform: rotate(2deg);}
+            50%{transform: rotate(0deg)}
+            75%{transform: rotate(-2deg)}
+            100%{transform: rotate(0deg)}
         }
         .cardImg {
             width: 100%;
             height: 80%;
-            background-position: contain;
-            // animation: imgNotRotated 0.01s linear 0.4s forwards;
+            background: #fff no-repeat 50%/contain;
+            box-shadow:
+            inset rgba(0,0,0,.5) -3px -3px 8px,
+            inset rgba(255,255,255,.9) 3px 3px 8px;
         }
         .cardTitle {
             width: 100%;
             height: 20%;
+            font-size: 30px;
+            font-family: $font_5;
+            color: rgb(213, 89, 73);
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0px 0px 9px  rgba(213, 89, 73, 0.7);
         }
         .cardRotateBtn {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid #000;
-            width: 40px;
-            height: 40px;
+           width: 60px;
+            height: 60px;
             right: 0;
             bottom: 0;
+            background: url("../img/rotate2.png") 50%/contain;
             cursor: pointer;
+            &:hover {
+                animation: rotateRotateBtn linear 1s infinite;
+            }
             &.inactive {
                 opacity: 0;
                 pointer-events: none;
             }
         }
         &.rotated {
-            perspective-origin: left center;
-            transform-style: preserve-3d;
-            perspective: 500px;  
-            transform: rotateY(180deg);
-            .cardTitle {
-                transform: rotateY(180deg);
-                animation: rotateContent 1s linear forwards;
-            }
-            .cardImg {
-                transform: rotateY(180deg);
-                // animation: rotateContent 1s linear forwards;
-            }
+            animation: rotateCard 1s forwards;
+        }
+        @keyframes rotateCard {
+            100%{transform: rotateY(180deg);}
+        }
+        @keyframes rotateRotateBtn {
+            100% {transform: rotate(360deg);}
         }
         &.play {
+            &:hover {
+                animation: hoverCard 0.3s linear infinite;  
+            }
             > div:nth-child(1) {
                 height: 100%;
             }
@@ -265,22 +305,48 @@ body {
             }
         }
         &.catched {
+            position: relative;
             pointer-events: none;
-            filter: grayscale(100%);
+            filter: blur(6.38px);
+            &:after {
+                position: absolute;
+                content: '';
+                display: block;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background: rgba(10, 227, 11, 0.4);
+                mix-blend-mode: multiply
+            }
         }
     }
 }
 .playRepeatBtn {
-    width: 100px;
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 50px;
-    border: 1px solid #000;
-    background-color: coral;
     margin: 50px auto 0;
     position: relative;
-    transition: 0.3s;
-    cursor: pointer;
-    font-size: 20px;
+    background-color: rgba(213, 89, 73, 1);
     font-weight: 700;
+    text-transform: uppercase;
+    font-family: $font_5;
+    font-size: 26px;
+    color: #fff;
+    cursor: pointer;
+    transition: 1s;
+    border-radius: 3%;
+    overflow: hidden;
+    box-shadow:
+    inset rgba(0,0,0,.5) -3px -3px 8px,
+    inset rgba(255,255,255,.9) 3px 3px 8px,
+    rgba(0,0,0,.8) 3px 3px 8px -3px;
+    &:hover {
+        animation: hoverCard 0.2s infinite;
+    }
     &:before {
         content: 'start';
     }
@@ -294,7 +360,11 @@ body {
         transform: scale(0);
     }
     &.chooseCat {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         &:before {
+            font-size: 22px;
             content: 'Choose Category';
         } 
     }
@@ -308,11 +378,6 @@ body {
     background-color: yellow;
 }
 
-@keyframes rotateContent {
-    0%{opacity: 1;}
-    25%{opacity: 0;}
-    75% {opacity: 1;}
-}
 @keyframes disappear {
     100% {
         transform: scale(0) rotate(1800deg);

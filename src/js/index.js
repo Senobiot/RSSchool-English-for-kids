@@ -1,3 +1,4 @@
+// import '../css/fonts.scss';
 import '../css/reset.css';
 import '../css/style.css';
 import '../css/style.scss';
@@ -57,9 +58,14 @@ for (let index = 0; index < cards.length; index+= 1) {
   cardWrapperS[index].addEventListener('mouseleave', function (){
     if (this.firstChild.classList.contains('rotated'))
     setTimeout(() => {
-      this.firstChild.classList.remove('rotated');
-      rotateBtnS[index].classList.remove('inactive');
-    }, 600)   
+      this.firstChild.classList.remove('rotated'); 
+      this.style.animation = 'rotateCard 1s reverse forwards'
+    }, 600)
+    setTimeout(() => {
+        this.style.animation = 'none';
+        this.style.animation = null;
+        rotateBtnS[index].classList.remove('inactive'); 
+    }, 1600)
   });
 
 

@@ -67,8 +67,6 @@ const application = {
             const titleCard = document.createElement('div');
             const cardWrapper = document.createElement('div');
 
-            
-
             cardWrapper.classList.add("cardWrapper");
             titleCard.textContent = cardsObject[0][index];
             card.classList.add('card');        
@@ -122,7 +120,6 @@ const application = {
 
             if (card.classList.contains('cardCategory')) card.classList.remove('cardCategory');
 
-
             img.style.backgroundImage = `url(${cardsObject[category][index].image})`;
             title.innerText = cardsObject[category][index].word;
             rotateBtn.classList.remove('inactive');
@@ -131,15 +128,16 @@ const application = {
                 rotateBtn.classList.add('inactive');
                 setTimeout(function(){
                     title.innerText = cardsObject[category][index].translation;
-                    }, 500)
+                    title.style.transform = 'rotateY(180deg)'
+                    }, 300)
             });
             card.parentElement.addEventListener('mouseleave', function (){
-                if (this.firstChild.classList.contains('rotated'))
+            if (this.firstChild.classList.contains('rotated'))
                 setTimeout(function(){
-                    setTimeout(function(){
-                        title.innerText = cardsObject[category][index].word
-                       }, 200)
-                }, 600)   
+                    title.innerText = cardsObject[category][index].word
+                    title.style.transform = 'none';
+                    title.style.transform = null;
+                    }, 1300)
            });
         }
     },
@@ -232,6 +230,11 @@ const application = {
     restart() {
         document.querySelector('.switcher').checked = false;
         this.train();
+        let rotateButtons = document.querySelectorAll('.cardRotateBtn')
+        for (let index = 0; index < rotateButtons.length; index++) {
+            rotateButtons[index].classList.add('inactive');
+            
+        }
         this.changeCategory(0);
     },
     getStatistic(category, open) {
