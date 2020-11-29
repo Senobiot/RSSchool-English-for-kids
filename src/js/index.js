@@ -8,17 +8,17 @@ import application from './application';
 
 sideMenu.start()
 application.start(0);
-// application.win()
 
 const burgerBtn = document.querySelector('.burgerBtn');
 const sideMenuWrapper = document.querySelector('.sideMenuWrapper');
 const sideMenuBtns = document.querySelectorAll('.sideMenuBtn');
-const cards = document.querySelectorAll('.card');
+const cards = document.querySelectorAll('.avers');
+const cardsReverse = document.querySelectorAll('.reverse');
 const rotateBtnS = document.querySelectorAll('.cardRotateBtn');
 const cardWrapperS =  document.querySelectorAll('.cardWrapper');
-// const cardTitleS = document.querySelectorAll('.cardTitle');
 const playRepeatBtn = document.querySelector('.playRepeatBtn');
 const switcher =  document.querySelector('.switcher');
+const repeatWordsBtn = document.querySelector('.statisticRepeatWordsBtn');
 const {body} = document;
 const mask = document.querySelector('.mask');
 const correctAudio = new Audio;
@@ -60,16 +60,18 @@ for (let index = 0; index < cards.length; index+= 1) {
   cardWrapperS[index].addEventListener('mouseleave', function (){
     if (this.firstChild.classList.contains('rotated')) {
       setTimeout(() => {
-      this.firstChild.classList.remove('rotated'); 
-      this.style.animation = 'rotateCard 1s reverse forwards'
+      this.firstChild.classList.remove('rotated');
+      this.lastChild.classList.remove('rotated'); 
     }, 600)
     setTimeout(() => {
-        this.style.animation = 'none';
-        this.style.animation = null;
         rotateBtnS[index].classList.remove('inactive'); 
     }, 1600)}
 
   });
+  rotateBtnS[index].addEventListener('click', function (){
+    cards[index].classList.add('rotated');
+    cardsReverse[index].classList.add('rotated');
+  })
 
   cards[index].addEventListener('click',function () {
     if (this.classList.contains('cardCategory')) {
@@ -130,7 +132,7 @@ playRepeatBtn.addEventListener('click', function () {
 document.querySelector('.statisticBtn').addEventListener('click', function(){
     if (this.classList.contains('active')) {
       this.classList.remove('active');
-      application.elements.content.removeChild(application.elements.content.lastChild);
+      application.elements.content.removeChild(application.elements.content.lastChild); //////// УБРАТЬ ПОТОМ
     } else {
       application.getStatistic(0, true);
       this.classList.add('active')
@@ -144,6 +146,3 @@ switcher.addEventListener('click', function () {
     application.play();
   }
 })
-
-
-

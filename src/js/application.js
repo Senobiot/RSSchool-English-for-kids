@@ -8,8 +8,11 @@ const application = {
         statisticMistakesCounter: null,
         statisticCorrectBlock: null,
         statisticCorrectCounter: null,
+        statisticRepeatWordsBtn: null,
+        repeatWordsArray: [],
         content: null,
         cards: [],
+        cardsReverse: [],
         playRepeatBtn: [],
         soundArr: [],
         randomArr: [],
@@ -69,16 +72,21 @@ const application = {
 
             cardWrapper.classList.add("cardWrapper");
             titleCard.textContent = cardsObject[0][index];
-            card.classList.add('card');        
+            card.classList.add('card', 'avers');        
             img.classList.add('cardImg');
             titleCard.classList.add('cardTitle');
             rotateBtn.classList.add('cardRotateBtn', 'inactive');
             card.appendChild(img);
             card.appendChild(titleCard);
+            let clone = card.cloneNode(true);
+            clone.classList.add('reverse');
+            clone.classList.remove('avers')
             card.appendChild(rotateBtn);
             cardWrapper.appendChild(card);
+            cardWrapper.appendChild(clone);
             this.elements.content.appendChild(cardWrapper);
             this.elements.cards.push(card);
+            this.elements.cardsReverse.push(clone);
         }
         this.createStatistic();
         this.changeCategory(0);
@@ -119,8 +127,11 @@ const application = {
 
         for (let index = 0; index < this.elements.cards.length; index += 1) {
             const card = this.elements.cards[index];
+            const reverse = this.elements.cardsReverse[index]
             const img = this.elements.cards[index].children[0];
+            const imgReverse = this.elements.cardsReverse[index].children[0];
             const title = this.elements.cards[index].children[1];
+            const titleReverse = this.elements.cardsReverse[index].children[1];
             const rotateBtn = this.elements.cards[index].children[2];
             const speech = new Audio;
             speech.src = cardsObject[category][index].audioSrc;
@@ -129,27 +140,10 @@ const application = {
             if (card.classList.contains('cardCategory')) card.classList.remove('cardCategory');
 
             img.style.backgroundImage = `url(${cardsObject[category][index].image})`;
+            imgReverse.style.backgroundImage = `url(${cardsObject[category][index].image})`;
             title.innerText = cardsObject[category][index].word;
+            titleReverse.innerText =  cardsObject[category][index].translation;
             rotateBtn.classList.remove('inactive');
-            rotateBtn.addEventListener('click', function () {
-                card.classList.add('rotated');
-                rotateBtn.classList.add('inactive');
-                setTimeout(function(){
-                    title.innerText = cardsObject[category][index].translation;
-                    img.style.transform = 'rotateY(180deg)'
-                    title.style.transform = 'rotateY(180deg)'
-                    }, 300)
-            });
-            card.parentElement.addEventListener('mouseleave', function (){
-            if (this.firstChild.classList.contains('rotated'))
-                setTimeout(function(){
-                    title.innerText = cardsObject[category][index].word
-                    img.style.transform = 'none';
-                    img.style.transform = null;
-                    title.style.transform = 'none';
-                    title.style.transform = null;
-                    }, 1300)
-           });
         }
     },
     randomCards() {
@@ -261,8 +255,18 @@ const application = {
     getStatistic(category, open) {
         const fragment = document.createDocumentFragment();
         const statisticTitle = document.createElement("div");
-        statisticTitle.classList.add("statisticTitle")
+        const statisticReset = document.createElement("div");
+        this.statisticRepeatWordsBtn = document.createElement("div");
+        statisticReset.innerText = 'Reset';
+        statisticReset.classList.add('statisticResetBtn');
+        this.statisticRepeatWordsBtn.innerText = 'Repeat difficult words';
+        this.statisticRepeatWordsBtn.classList.add('statisticRepeatWordsBtn');
+        statisticTitle.classList.add("statisticTitle");
         statisticTitle.textContent = `Your statistic on ${cardsObject[0][0]} category`;
+        statisticTitle.appendChild(statisticReset);
+        statisticTitle.appendChild(this.statisticRepeatWordsBtn);
+        this.statisticRepeatWordsBtn.addEventListener('click', e => this.repeatWords())
+
         fragment.appendChild(statisticTitle);
   
         const statisticCategories = document.createElement("div");
@@ -332,6 +336,18 @@ const application = {
           this.elements.statistic.appendChild(fragment);
           this.elements.content.appendChild(this.elements.statistic);
   
+        },
+        repeatWords(){
+             let statisticArray; 
+             let parsedArray = [];
+            for (let item of cardsObject[0]) {
+                statisticArray = JSON.parse(localStorage.getItem(item));
+                for (let i = 0; i < cardsObject[0].length; i += 1) {
+                    parsedArray.push(statisticArray[i].mistakes + "+" + statisticArray[i].word);
+                }             
+            }
+            this.elements.repeatWordsArray = parsedArray.sort().splice(-cardsObject[0].length).map(a=> a.replace(/\d*\+/, ""));
+            console.log(this.elements.repeatWordsArray)
         },
 }
 
