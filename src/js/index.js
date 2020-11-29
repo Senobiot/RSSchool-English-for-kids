@@ -1,4 +1,3 @@
-// import '../css/fonts.scss';
 import '../css/reset.css';
 import '../css/style.css';
 import '../css/style.scss';
@@ -52,6 +51,7 @@ for (let index = 0; index < sideMenuBtns.length; index+= 1) {
     burgerBtn.classList.toggle("active");
     mask.classList.toggle("active");
     document.querySelector('.switcher').checked = false;
+    document.querySelector('.switcher').classList.remove('blocked')
     if (index === 0) {
       application.restart()
     } else { 
@@ -100,21 +100,26 @@ for (let index = 0; index < cards.length; index+= 1) {
           if (index === application.elements.randomArr[application.properties.step]) {
             application.guess();
             correctAudio.play();
+             this.classList.add('catched');
             let localData;
             if (application.properties.repeatWords === true) {
               localData =  JSON.parse(localStorage.getItem(application.elements.repeatWordsArrayCategories[index]));
               localData.find(a=> a.word === this.children[1].textContent).correct += 1;   
               localStorage.setItem(application.elements.repeatWordsArrayCategories[index], JSON.stringify(localData)) 
+              if (application.properties.step === application.elements.repeatWordsArray.length) {
+                application.win();
+                return;
+                }   
             } else {
-              localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+              localData = JSON.parse(localStorage.getItem(application.properties.currentCategory));
               localData[index].correct += 1;   
-              localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData))    
-            }
-            this.classList.add('catched');
-            if (application.properties.step === application.elements.cards.length) {
-              application.win();
-              return;
-            }
+              localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData));
+                if (application.properties.step === application.elements.cards.length) {
+                application.win();
+                return;
+                }    
+            }        
+
             setTimeout(() => {
               application.elements.soundArr[application.elements.randomArr[application.properties.step]].play();
             }, 1000)

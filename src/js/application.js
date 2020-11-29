@@ -116,6 +116,7 @@ const application = {
         if (category === 0) {
             for (let index = 0; index < cardsObject[0].length; index += 1) {
                 this.elements.cards[index].classList.add('cardCategory');
+                this.elements.cards[index].classList.remove('hiddenForRepeat');
                 this.elements.cards[index].children[0].style.backgroundImage = `url(./img/cat_${index}.jpg)`;
                 this.elements.cards[index].children[1].textContent = cardsObject[category][index];
                 this.elements.soundArr = [];
@@ -141,17 +142,22 @@ const application = {
             }
 
             for (let index = 0; index < this.elements.cards.length; index += 1) {
-                const speech = new Audio;
-                speech.src = currentRepeatWordArray[index].audioSrc;
-                this.elements.soundArr.push(speech);
-    
-                if (this.elements.cards[index].classList.contains('cardCategory')) this.elements.cards[index].classList.remove('cardCategory');
-    
-                this.elements.cards[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
-                this.elements.cardsReverse[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
-                this.elements.cards[index].children[1].innerText = currentRepeatWordArray[index].word;
-                this.elements.cardsReverse[index].children[1].innerText =  currentRepeatWordArray[index].translation;
-                this.elements.cards[index].children[2].classList.remove('inactive');
+                if (index > this.elements.repeatWordsArray.length - 1) {
+                    this.elements.cards[index].classList.add('hiddenForRepeat');
+                } else {
+                    this.elements.cards[index].classList.remove('hiddenForRepeat');
+                    const speech = new Audio;
+                    speech.src = currentRepeatWordArray[index].audioSrc;
+                    this.elements.soundArr.push(speech);
+        
+                    if (this.elements.cards[index].classList.contains('cardCategory')) this.elements.cards[index].classList.remove('cardCategory');
+        
+                    this.elements.cards[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
+                    this.elements.cardsReverse[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
+                    this.elements.cards[index].children[1].innerText = currentRepeatWordArray[index].word;
+                    this.elements.cardsReverse[index].children[1].innerText =  currentRepeatWordArray[index].translation;
+                    this.elements.cards[index].children[2].classList.remove('inactive');}
+
             }
             return
         }
@@ -169,7 +175,7 @@ const application = {
             this.elements.soundArr.push(speech);
 
             if (this.elements.cards[index].classList.contains('cardCategory')) this.elements.cards[index].classList.remove('cardCategory');
-
+            this.elements.cards[index].classList.remove('hiddenForRepeat');
             this.elements.cards[index].children[0].style.backgroundImage = `url(${cardsObject[category][index].image})`;
             this.elements.cardsReverse[index].children[0].style.backgroundImage = `url(${cardsObject[category][index].image})`;
             this.elements.cards[index].children[1].innerText = cardsObject[category][index].word;
@@ -181,9 +187,14 @@ const application = {
         function getRandom(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min; 
         }
-
-        while (this.elements.randomArr.length < this.elements.cards.length) {
-            const num = getRandom(0, this.elements.cards.length - 1);
+        let length;
+        if (this.properties.repeatWords === true) {
+            length = this.elements.repeatWordsArray.length;
+        } else {
+            length = this.elements.cards.length;
+        }
+        while (this.elements.randomArr.length < length) {
+            const num = getRandom(0, length - 1);
             if (this.elements.randomArr.indexOf(num) === -1) this.elements.randomArr.push(num);
         }
     },
@@ -275,6 +286,7 @@ const application = {
     },
     restart() {
         document.querySelector('.switcher').checked = false;
+        document.querySelector('.switcher').classList.remove('blocked')
         this.train();
         const rotateButtons = document.querySelectorAll('.cardRotateBtn')
         for (let index = 0; index < rotateButtons.length; index += 1) {
@@ -302,7 +314,6 @@ const application = {
         this.statisticRepeatWordsBtn.classList.add('statisticRepeatWordsBtn');
         statisticTitle.classList.add("statisticTitle");
         statisticTitle.textContent = `Your statistic on in ${ category ? cardsObject[0][category] : cardsObject[0][0]} category`;
-          console.log(statisticTitle, statisticReset)
         statisticTitle.appendChild(statisticReset);
       
         statisticTitle.appendChild(this.statisticRepeatWordsBtn);
@@ -391,19 +402,18 @@ const application = {
                     parsedArray.push(statisticArray[i].mistakes + "+" + statisticArray[i].word + "#" + item);
                 }             
             }
-            let sortConstruct = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+            let sortConstruct = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}); 
             let clearArray = parsedArray.sort(sortConstruct.compare).splice(-cardsObject[0].length);
-            console.log(clearArray);
-            this.elements.repeatWordsArray = clearArray.map(a=> a.replace(/\d*\+/, "").replace(/#.*/, ""));
-            this.elements.repeatWordsArrayCategories = clearArray.map(a=> a.replace(/.*#/, ""))
-            this.changeCategory(20)
+            this.elements.repeatWordsArray = clearArray.filter(a=> !a.match(/^0/)).map(a => a.replace(/\d*\+/, "").replace(/#.*/, ""));  
+            this.elements.repeatWordsArrayCategories = clearArray.filter(a=> !a.match(/^0/)).map(a => a.replace(/.*#/, ""));
             document.querySelector('.switcher').checked = false;
-            // this.elements.content.removeChild(this.elements.content.lastChild)
+            if (this.elements.repeatWordsArray.length === 0) {
+                document.querySelector('.switcher').classList.add('blocked');
+            }
+
+            this.changeCategory(20)
             this.properties.repeatWords = true;
         },
-        // resetStatistic() {
-        //     localStorage.clear()
-        // },
 }
 
 export default application;
