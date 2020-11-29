@@ -108,10 +108,14 @@ const application = {
                 this.elements.cards[index].classList.add('cardCategory');
                 this.elements.cards[index].children[0].style.backgroundImage = `url(./img/cat_${index}.jpg)`;
                 this.elements.cards[index].children[1].textContent = cardsObject[category][index];
+                this.elements.soundArr = [];
             }
             return
         }
-        if (this.elements.soundArr.length > 0) this.elements.soundArr = [];
+        if (this.elements.soundArr.length > 0) {
+            this.elements.soundArr = [];
+            this.train();
+        }
 
         for (let index = 0; index < this.elements.cards.length; index += 1) {
             const card = this.elements.cards[index];
@@ -213,6 +217,11 @@ const application = {
         this.properties.play = false;
         this.elements.playRepeatBtn.classList.remove('playing');
         this.elements.playRepeatBtn.classList.add('inactive');
+        const winnerAudio = new Audio;
+        const loserAudio = new Audio;
+        winnerAudio.src = './audio/win.mp3';
+        loserAudio.src = './audio/fail.mp3';
+
         setTimeout(() => {
             this.elements.content.classList.add('disappear');
         }, 1000);
@@ -227,6 +236,11 @@ const application = {
        
         setTimeout(() => {
             document.body.appendChild(winpopup);
+                if (winpopup.classList.contains("winner")) {
+                    winnerAudio.play();
+                } else {
+                    loserAudio.play();
+                }
         }, 3000);
         setTimeout(() => {
             document.body.removeChild(winpopup);

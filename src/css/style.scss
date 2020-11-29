@@ -417,7 +417,21 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     position: fixed;
     left: calc(10%);
     top: 45%;
-    background-color: yellow;
+    &.winner, &.loser {
+        font-size: 36px;
+        font-weight: 900;
+        text-align: center;
+        color: #fff;
+        font-family: $font_5;
+        text-transform: uppercase;
+        background: #61517b;
+        transition: all 0.4s;
+        text-shadow: 0 0 9px #000;
+        background: url("../img/winner.png") no-repeat  50%/contain;
+    }
+    &.loser {
+        background: url("../img/fail.png") no-repeat  50%/contain;
+    }
 }
 
 @keyframes disappear {

@@ -8,6 +8,7 @@ import application from './application';
 
 sideMenu.start()
 application.start(0);
+// application.win()
 
 const burgerBtn = document.querySelector('.burgerBtn');
 const sideMenuWrapper = document.querySelector('.sideMenuWrapper');
@@ -22,9 +23,9 @@ const {body} = document;
 const mask = document.querySelector('.mask');
 const correctAudio = new Audio;
 const mistakeAudio = new Audio;
+
 correctAudio.src = './audio/correct2.mp3';
 mistakeAudio.src = './audio/fart.mp3';
-
 
 burgerBtn.addEventListener('click', () => {
   sideMenuWrapper.classList.toggle("active");
@@ -45,6 +46,7 @@ for (let index = 0; index < sideMenuBtns.length; index+= 1) {
     sideMenuWrapper.classList.toggle("active");
     burgerBtn.classList.toggle("active");
     mask.classList.toggle("active");
+    document.querySelector('.switcher').checked = false;
     if (index === 0) {
       application.restart()
     } else { 
