@@ -18,6 +18,7 @@ const rotateBtnS = document.querySelectorAll('.cardRotateBtn');
 const cardWrapperS =  document.querySelectorAll('.cardWrapper');
 const playRepeatBtn = document.querySelector('.playRepeatBtn');
 const switcher =  document.querySelector('.switcher');
+const statistcBtn = document.querySelector('.statisticBtn');
 const repeatWordsBtn = document.querySelector('.statisticRepeatWordsBtn');
 const {body} = document;
 const mask = document.querySelector('.mask');
@@ -42,6 +43,10 @@ mask.addEventListener('click',function () {
 
 for (let index = 0; index < sideMenuBtns.length; index+= 1) {
   sideMenuBtns[index].addEventListener('click',function () {
+    if (statistcBtn.classList.contains('active')) {
+      statistcBtn.classList.remove("active");
+      application.elements.content.removeChild(application.elements.content.lastChild);
+    }
     body.classList.toggle("block");
     sideMenuWrapper.classList.toggle("active");
     burgerBtn.classList.toggle("active");
@@ -78,9 +83,16 @@ for (let index = 0; index < cards.length; index+= 1) {
       application.properties.currentCategory = this.children[1].textContent;
       application.changeCategory(index + 1);
     } else if (playRepeatBtn.classList.contains('inactive') && !this.classList.contains('rotated')) {
-        const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
-        localData[index].trained += 1;   
-        localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
+        let localData;
+        if (application.properties.repeatWords === true) {
+          localData =  JSON.parse(localStorage.getItem(application.elements.repeatWordsArrayCategories[index]));
+          localData.find(a=> a.word === this.children[1].textContent).trained += 1;
+          localStorage.setItem(application.elements.repeatWordsArrayCategories[index], JSON.stringify(localData)) 
+        } else {
+          localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+          localData[index].trained += 1;   
+          localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData))    
+        }
           application.elements.soundArr[index].currentTime = 0;
           application.elements.soundArr[index].play();
           }
@@ -88,9 +100,16 @@ for (let index = 0; index < cards.length; index+= 1) {
           if (index === application.elements.randomArr[application.properties.step]) {
             application.guess();
             correctAudio.play();
-            const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
-            localData[index].correct += 1;   
-            localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
+            let localData;
+            if (application.properties.repeatWords === true) {
+              localData =  JSON.parse(localStorage.getItem(application.elements.repeatWordsArrayCategories[index]));
+              localData.find(a=> a.word === this.children[1].textContent).correct += 1;   
+              localStorage.setItem(application.elements.repeatWordsArrayCategories[index], JSON.stringify(localData)) 
+            } else {
+              localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+              localData[index].correct += 1;   
+              localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData))    
+            }
             this.classList.add('catched');
             if (application.properties.step === application.elements.cards.length) {
               application.win();
@@ -100,9 +119,19 @@ for (let index = 0; index < cards.length; index+= 1) {
               application.elements.soundArr[application.elements.randomArr[application.properties.step]].play();
             }, 1000)
           } else {
-            const localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
-            localData[application.elements.randomArr[application.properties.step]].mistakes += 1;  
-            localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData)) 
+            let localData;
+            if (application.properties.repeatWords === true) {
+              localData =  JSON.parse(localStorage.getItem(application.elements.repeatWordsArrayCategories[
+                application.elements.randomArr[application.properties.step]]));
+              localData.find(a => a.word === application.elements.repeatWordsArray[
+                application.elements.randomArr[application.properties.step]]).mistakes += 1;  
+              localStorage.setItem(application.elements.repeatWordsArrayCategories[
+                application.elements.randomArr[application.properties.step]], JSON.stringify(localData)) 
+            } else {
+              localData = JSON.parse(localStorage.getItem(application.properties.currentCategory))
+              localData[application.elements.randomArr[application.properties.step]].mistakes += 1;  
+              localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData))     
+            }
             mistakeAudio.play();
             application.noGuess();
           }
@@ -129,7 +158,7 @@ playRepeatBtn.addEventListener('click', function () {
   }
 })
 
-document.querySelector('.statisticBtn').addEventListener('click', function(){
+statistcBtn.addEventListener('click', function(){
     if (this.classList.contains('active')) {
       this.classList.remove('active');
       application.elements.content.removeChild(application.elements.content.lastChild); //////// УБРАТЬ ПОТОМ

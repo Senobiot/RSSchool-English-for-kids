@@ -10,6 +10,7 @@ const application = {
         statisticCorrectCounter: null,
         statisticRepeatWordsBtn: null,
         repeatWordsArray: [],
+        repeatWordsArrayCategories: [],
         content: null,
         cards: [],
         cardsReverse: [],
@@ -24,7 +25,8 @@ const application = {
         mistakes: 0,
         correctAnswers: 0,
         step: 0,
-        currentCategory: ''
+        currentCategory: '',
+        repeatWords: false,
     },
 
     start() {
@@ -118,32 +120,61 @@ const application = {
                 this.elements.cards[index].children[1].textContent = cardsObject[category][index];
                 this.elements.soundArr = [];
             }
+            this.properties.repeatWords = false;
             return
         }
+        if (category === 20) {
+            this.elements.soundArr = [];
+            this.train();
+            const currentRepeatWordArray = [];
+            let IndexOfCategories = [];
+            for (let elements of this.elements.repeatWordsArrayCategories) {
+                IndexOfCategories.push(cardsObject[0].indexOf(elements))            
+            }
+            
+            for (let i = 0; i < this.elements.repeatWordsArray.length; i += 1) {
+                for (let element of cardsObject[IndexOfCategories[i] + 1]) {
+                   if (element.word === this.elements.repeatWordsArray[i]) {
+                    currentRepeatWordArray.push(element);
+                   }                   
+                }          
+            }
+
+            for (let index = 0; index < this.elements.cards.length; index += 1) {
+                const speech = new Audio;
+                speech.src = currentRepeatWordArray[index].audioSrc;
+                this.elements.soundArr.push(speech);
+    
+                if (this.elements.cards[index].classList.contains('cardCategory')) this.elements.cards[index].classList.remove('cardCategory');
+    
+                this.elements.cards[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
+                this.elements.cardsReverse[index].children[0].style.backgroundImage = `url(${currentRepeatWordArray[index].image})`;
+                this.elements.cards[index].children[1].innerText = currentRepeatWordArray[index].word;
+                this.elements.cardsReverse[index].children[1].innerText =  currentRepeatWordArray[index].translation;
+                this.elements.cards[index].children[2].classList.remove('inactive');
+            }
+            return
+        }
+
+        this.properties.repeatWords = false;
+        
         if (this.elements.soundArr.length > 0) {
             this.elements.soundArr = [];
             this.train();
         }
 
         for (let index = 0; index < this.elements.cards.length; index += 1) {
-            const card = this.elements.cards[index];
-            const reverse = this.elements.cardsReverse[index]
-            const img = this.elements.cards[index].children[0];
-            const imgReverse = this.elements.cardsReverse[index].children[0];
-            const title = this.elements.cards[index].children[1];
-            const titleReverse = this.elements.cardsReverse[index].children[1];
-            const rotateBtn = this.elements.cards[index].children[2];
             const speech = new Audio;
             speech.src = cardsObject[category][index].audioSrc;
             this.elements.soundArr.push(speech);
 
-            if (card.classList.contains('cardCategory')) card.classList.remove('cardCategory');
+            if (this.elements.cards[index].classList.contains('cardCategory')) this.elements.cards[index].classList.remove('cardCategory');
 
-            img.style.backgroundImage = `url(${cardsObject[category][index].image})`;
-            imgReverse.style.backgroundImage = `url(${cardsObject[category][index].image})`;
-            title.innerText = cardsObject[category][index].word;
-            titleReverse.innerText =  cardsObject[category][index].translation;
-            rotateBtn.classList.remove('inactive');
+            this.elements.cards[index].children[0].style.backgroundImage = `url(${cardsObject[category][index].image})`;
+            this.elements.cardsReverse[index].children[0].style.backgroundImage = `url(${cardsObject[category][index].image})`;
+            this.elements.cards[index].children[1].innerText = cardsObject[category][index].word;
+            this.elements.cardsReverse[index].children[1].innerText =  cardsObject[category][index].translation;
+            this.elements.cards[index].children[2].classList.remove('inactive');
         }
     },
     randomCards() {
@@ -259,18 +290,32 @@ const application = {
         this.statisticRepeatWordsBtn = document.createElement("div");
         statisticReset.innerText = 'Reset';
         statisticReset.classList.add('statisticResetBtn');
+        statisticReset.addEventListener('click', e => {
+            localStorage.clear();
+            this.elements.content.removeChild(this.elements.content.lastChild);
+            this.elements.statistic = [];
+
+            this.createStatistic();
+            this.getStatistic(0, true)
+        });
         this.statisticRepeatWordsBtn.innerText = 'Repeat difficult words';
         this.statisticRepeatWordsBtn.classList.add('statisticRepeatWordsBtn');
         statisticTitle.classList.add("statisticTitle");
-        statisticTitle.textContent = `Your statistic on ${cardsObject[0][0]} category`;
+        statisticTitle.textContent = `Your statistic on in ${ category ? cardsObject[0][category] : cardsObject[0][0]} category`;
+          console.log(statisticTitle, statisticReset)
         statisticTitle.appendChild(statisticReset);
+      
         statisticTitle.appendChild(this.statisticRepeatWordsBtn);
-        this.statisticRepeatWordsBtn.addEventListener('click', e => this.repeatWords())
+        this.statisticRepeatWordsBtn.addEventListener('click', e => {
+            this.elements.content.removeChild(this.elements.content.lastChild);
+            this.elements.statisticBtn.classList.remove("active");
+            this.repeatWords();
+        })
 
         fragment.appendChild(statisticTitle);
   
         const statisticCategories = document.createElement("div");
-        statisticCategories.classList.add("statisticCategories")
+        statisticCategories.classList.add("statisticCategories");
         const categories = cardsObject[0];
             for (let i = 0; i <= categories.length - 1; i += 1) {
                     const menuElement = document.createElement("div");
@@ -280,7 +325,7 @@ const application = {
                         document.querySelector(".statistic").remove();	
                         this.elements.statistic = null;
                         this.getStatistic(i, true)
-                        document.querySelector(".statisticTitle").textContent = `Your statistic in ${categories[i]} category`;
+                       // document.querySelector(".statisticTitle").textContent = `Your statistic in ${categories[i]} category`;
                     })
                     statisticCategories.appendChild(menuElement);
             }
@@ -343,12 +388,22 @@ const application = {
             for (let item of cardsObject[0]) {
                 statisticArray = JSON.parse(localStorage.getItem(item));
                 for (let i = 0; i < cardsObject[0].length; i += 1) {
-                    parsedArray.push(statisticArray[i].mistakes + "+" + statisticArray[i].word);
+                    parsedArray.push(statisticArray[i].mistakes + "+" + statisticArray[i].word + "#" + item);
                 }             
             }
-            this.elements.repeatWordsArray = parsedArray.sort().splice(-cardsObject[0].length).map(a=> a.replace(/\d*\+/, ""));
-            console.log(this.elements.repeatWordsArray)
+            let sortConstruct = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+            let clearArray = parsedArray.sort(sortConstruct.compare).splice(-cardsObject[0].length);
+            console.log(clearArray);
+            this.elements.repeatWordsArray = clearArray.map(a=> a.replace(/\d*\+/, "").replace(/#.*/, ""));
+            this.elements.repeatWordsArrayCategories = clearArray.map(a=> a.replace(/.*#/, ""))
+            this.changeCategory(20)
+            document.querySelector('.switcher').checked = false;
+            // this.elements.content.removeChild(this.elements.content.lastChild)
+            this.properties.repeatWords = true;
         },
+        // resetStatistic() {
+        //     localStorage.clear()
+        // },
 }
 
 export default application;

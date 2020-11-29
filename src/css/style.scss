@@ -320,9 +320,12 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
             inset rgba(255,255,255,.9) 3px 3px 8px;
         }
         .cardTitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             height: 20%;
-            font-size: 30px;
+            font-size: 24px;
             font-family: $font_5;
             color: rgb(213, 89, 73);
             font-weight: 700;
@@ -346,12 +349,7 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
                 pointer-events: none;
             }
         }
-        // &.rotated {
-        //     animation: rotateCard 1s forwards;
-        // }
-        // @keyframes rotateCard {
-        //     100%{transform: rotateY(180deg);}
-        // }
+
         @keyframes rotateRotateBtn {
             100% {transform: rotate(360deg);}
         }
@@ -511,10 +509,15 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
         }
 	}
 }
+.statisticTitle {
+    justify-content: space-between;
+    padding: 0 10px;
+}
 .statisticResetBtn, .statisticRepeatWordsBtn {
     padding: 0 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 70%;
     background-color: rgba(213, 89, 73, 1);
     font-weight: 700;
@@ -538,6 +541,7 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 
 
 .statisticResetBtn {
+    min-width: 100px;
     order: -1;
 }
 .statisticGrid {
