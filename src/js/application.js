@@ -301,6 +301,7 @@ const application = {
         const fragment = document.createDocumentFragment();
         const statisticTitle = document.createElement("div");
         const statisticReset = document.createElement("div");
+        const statisticTitleHeader = document.createElement("div");
         this.statisticRepeatWordsBtn = document.createElement("div");
         statisticReset.innerText = 'Reset';
         statisticReset.classList.add('statisticResetBtn');
@@ -313,10 +314,12 @@ const application = {
         });
         this.statisticRepeatWordsBtn.innerText = 'Repeat difficult words';
         this.statisticRepeatWordsBtn.classList.add('statisticRepeatWordsBtn');
+        statisticTitleHeader.classList.add('statisticTitleHeader');
+        statisticTitleHeader.textContent = `Your statistic on in ${ category ? cardsObject[0][category] : cardsObject[0][0]} category`;
         statisticTitle.classList.add("statisticTitle");
-        statisticTitle.textContent = `Your statistic on in ${ category ? cardsObject[0][category] : cardsObject[0][0]} category`;
+       
         statisticTitle.appendChild(statisticReset);
-      
+        statisticTitle.appendChild(statisticTitleHeader);
         statisticTitle.appendChild(this.statisticRepeatWordsBtn);
         this.statisticRepeatWordsBtn.addEventListener('click', e => {
             this.elements.content.removeChild(this.elements.content.lastChild);
@@ -434,7 +437,6 @@ const application = {
                 } else {
                      statisticArray.sort((a,b) => (a[sort] > b[sort]) ? -1 : ((b[sort] > a[sort]) ? 1 : 0)); 
                 }
-
                 this.properties.sorted = false;
                 } else {
                     if (sort === 'hits') {
