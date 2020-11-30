@@ -27,6 +27,8 @@ const application = {
         step: 0,
         currentCategory: '',
         repeatWords: false,
+        sorted: false,
+        sortedDirection: null,
     },
 
     start() {
@@ -295,7 +297,7 @@ const application = {
         }
         this.changeCategory(0);
     },
-    getStatistic(category, open) {
+    getStatistic(category, open, sort) {
         const fragment = document.createDocumentFragment();
         const statisticTitle = document.createElement("div");
         const statisticReset = document.createElement("div");
@@ -306,7 +308,6 @@ const application = {
             localStorage.clear();
             this.elements.content.removeChild(this.elements.content.lastChild);
             this.elements.statistic = [];
-
             this.createStatistic();
             this.getStatistic(0, true)
         });
@@ -336,7 +337,6 @@ const application = {
                         document.querySelector(".statistic").remove();	
                         this.elements.statistic = null;
                         this.getStatistic(i, true)
-                       // document.querySelector(".statisticTitle").textContent = `Your statistic in ${categories[i]} category`;
                     })
                     statisticCategories.appendChild(menuElement);
             }
@@ -348,20 +348,118 @@ const application = {
            
           for (let i = 0; i <= 5; i += 1) {
                     const menuElement = document.createElement("div");
-                    if (i === 0)  menuElement.textContent = "word";
-                    if (i === 1)  menuElement.textContent = "translation";
-                    if (i === 2)  menuElement.textContent = "trained";
-                    if (i === 3)  menuElement.textContent = "correct";
-                    if (i === 4)  menuElement.textContent = "mistakes";
-                    if (i === 5) menuElement.textContent = "hits, %";
+                    if (i === 0)  {
+                        menuElement.textContent = "word";
+                        menuElement.classList.add('statisticHeaderWord');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            // this.properties.sorted = 'word';
+                            this.getStatistic(category, true, 'word')
+                        })
+                    }
+                    if (i === 1)  {
+                        menuElement.textContent = "translation";
+                        menuElement.classList.add('statisticHeaderTranslation');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            this.getStatistic(category, true, 'translation')
+                        })
+                    }
+                    if (i === 2)  {
+                        menuElement.textContent = "trained";
+                        menuElement.classList.add('statisticHeaderTrained');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            this.getStatistic(category, true, 'trained')
+                        })
+                    }
+                    if (i === 3)  {
+                        menuElement.textContent = "correct";
+                        menuElement.classList.add('statisticHeaderCorrect');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            this.getStatistic(category, true, 'correct')
+                        })
+                    }
+                    if (i === 4)  {
+                        menuElement.textContent = "mistakes";
+                        menuElement.classList.add('statisticHeaderMistakes');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            this.getStatistic(category, true, 'mistakes')
+                        })
+                    }
+                    if (i === 5) {
+                        menuElement.textContent = "hits, %";
+                        menuElement.classList.add('statisticHeaderHits');
+                        menuElement.addEventListener('click', ()=> {
+                            document.querySelector(".statistic").remove();	
+                            this.elements.statistic = null;
+                            this.getStatistic(category, true, 'hits')
+                        })
+                    }
                     statisticHeader.appendChild(menuElement);
             }
             fragment.appendChild(statisticHeader);
 
-        const statisticGrid = document.createElement("div");
+            const statisticGrid = document.createElement("div");
             statisticGrid.classList.add("statisticGrid");
-        const statisticArray = JSON.parse(localStorage.getItem(categories[category]));
-  
+            const statisticArray = JSON.parse(localStorage.getItem(categories[category]));
+
+
+            
+            if (sort) {
+                if (this.properties.sorted === sort) {
+                    if (sort === 'hits') {
+                    statisticArray.sort(function(a,b) {
+                        if ((a.correct + a.mistakes) > 0 && (b.correct + b.mistakes) > 0) {
+                            if (a.correct / (a.correct + a.mistakes) > b.correct / (b.correct + b.mistakes)) {
+                                return -1;
+                            } else if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        } else if ((a.correct + a.mistakes) > 0) {
+                            return -1;
+                        } else if ((b.correct + b.mistakes) > 0) {
+                            return 1;
+                        }
+                    })    
+                } else {
+                     statisticArray.sort((a,b) => (a[sort] > b[sort]) ? -1 : ((b[sort] > a[sort]) ? 1 : 0)); 
+                }
+
+                this.properties.sorted = false;
+                } else {
+                    if (sort === 'hits') {
+                        statisticArray.sort(function(a,b) {
+                            if ((a.correct + a.mistakes) > 0 && (b.correct + b.mistakes) > 0) {
+                                if (a.correct / (a.correct + a.mistakes) > b.correct / (b.correct + b.mistakes)) {
+                                    return 1;
+                                } else if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
+                            } else if ((a.correct + a.mistakes) > 0) {
+                                return 1;
+                            } else if ((b.correct + b.mistakes) > 0) {
+                                return -1;
+                            }
+                        })            
+                    } else {
+                         statisticArray.sort((a,b) => (a[sort] > b[sort]) ? 1 : ((b[sort] > a[sort]) ? -1 : 0)); 
+                    }
+                    this.properties.sorted = sort;
+                }          
+            }
+
             for (let i = 0; i < this.elements.cards.length ; i += 1) {
                 const menuElement = document.createElement("div");
                 menuElement.classList.add("word");
@@ -377,7 +475,7 @@ const application = {
                         if (hint > 0) {
                             cell.textContent = ((statisticArray[i].correct / hint)*100).toFixed(2);
                         }  else {
-                            cell.textContent = 0};
+                            cell.textContent = '-'};
                     } 
                     menuElement.appendChild(cell);
                 }

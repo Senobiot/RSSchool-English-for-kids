@@ -562,11 +562,15 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
     align-items: center;
     border-top: 3px solid rgba(255,255, 255, 0.4);
 }
+
 .statisticHeader {
     background-color: rgba(213, 89, 73, 1);
 	height: 5%;
     font-size: 16px;
     font-weight: 900;
+    > div {
+        cursor: pointer;
+    }
 }
 .hiddenForRepeat {
     pointer-events: none;
