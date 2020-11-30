@@ -82,7 +82,7 @@ const application = {
             rotateBtn.classList.add('cardRotateBtn', 'inactive');
             card.appendChild(img);
             card.appendChild(titleCard);
-            let clone = card.cloneNode(true);
+            const clone = card.cloneNode(true);
             clone.classList.add('reverse');
             clone.classList.remove('avers')
             card.appendChild(rotateBtn);
@@ -130,15 +130,15 @@ const application = {
             this.elements.soundArr = [];
             this.train();
             const currentRepeatWordArray = [];
-            let IndexOfCategories = [];
-            for (let elements of this.elements.repeatWordsArrayCategories) {
-                IndexOfCategories.push(cardsObject[0].indexOf(elements))            
+            const IndexOfCategories = [];
+            for (let i = 0; i < this.elements.repeatWordsArrayCategories.length; i += 1) {
+                IndexOfCategories.push(cardsObject[0].indexOf(this.elements.repeatWordsArrayCategories[i]))            
             }
             
             for (let i = 0; i < this.elements.repeatWordsArray.length; i += 1) {
-                for (let element of cardsObject[IndexOfCategories[i] + 1]) {
-                   if (element.word === this.elements.repeatWordsArray[i]) {
-                    currentRepeatWordArray.push(element);
+                for (let j = 0; j < cardsObject[IndexOfCategories[i]].length; j += 1) {
+                   if (cardsObject[IndexOfCategories[i] + 1][j].word === this.elements.repeatWordsArray[i]) {
+                    currentRepeatWordArray.push(cardsObject[IndexOfCategories[i] + 1][j]);
                    }                   
                 }          
             }
@@ -305,7 +305,7 @@ const application = {
         this.statisticRepeatWordsBtn = document.createElement("div");
         statisticReset.innerText = 'Reset';
         statisticReset.classList.add('statisticResetBtn');
-        statisticReset.addEventListener('click', e => {
+        statisticReset.addEventListener('click', () => {
             localStorage.clear();
             this.elements.content.removeChild(this.elements.content.lastChild);
             this.elements.statistic = [];
@@ -321,7 +321,7 @@ const application = {
         statisticTitle.appendChild(statisticReset);
         statisticTitle.appendChild(statisticTitleHeader);
         statisticTitle.appendChild(this.statisticRepeatWordsBtn);
-        this.statisticRepeatWordsBtn.addEventListener('click', e => {
+        this.statisticRepeatWordsBtn.addEventListener('click', () => {
             this.elements.content.removeChild(this.elements.content.lastChild);
             this.elements.statisticBtn.classList.remove("active");
             this.repeatWords();
@@ -419,44 +419,66 @@ const application = {
             if (sort) {
                 if (this.properties.sorted === sort) {
                     if (sort === 'hits') {
-                    statisticArray.sort(function(a,b) {
+                    statisticArray.sort((a,b) => {
                         if ((a.correct + a.mistakes) > 0 && (b.correct + b.mistakes) > 0) {
                             if (a.correct / (a.correct + a.mistakes) > b.correct / (b.correct + b.mistakes)) {
                                 return -1;
-                            } else if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
+                            } if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
                                 return 1;
-                            } else {
+                            } 
                                 return 0;
-                            }
-                        } else if ((a.correct + a.mistakes) > 0) {
+                            
+                        } if ((a.correct + a.mistakes) > 0) {
                             return -1;
-                        } else if ((b.correct + b.mistakes) > 0) {
+                        } if ((b.correct + b.mistakes) > 0) {
                             return 1;
-                        }
+                        } 
+                            return null;
+                        
                     })    
-                } else {
-                     statisticArray.sort((a,b) => (a[sort] > b[sort]) ? -1 : ((b[sort] > a[sort]) ? 1 : 0)); 
+                } else {     
+                    statisticArray.sort(function (a,b) {
+                        if ( a[sort] > b[sort] ){
+                          return -1;
+                        }
+                        if ( b[sort] > a[sort] ){
+                          return 1;
+                        }
+                        return 0;
+                      });
+
+                    // statisticArray.sort((a,b) => (a[sort] > b[sort]) ? -1 : ((b[sort] > a[sort]) ? 1 : 0)); 
                 }
                 this.properties.sorted = false;
                 } else {
                     if (sort === 'hits') {
-                        statisticArray.sort(function(a,b) {
+                        statisticArray.sort(function (a,b) {
                             if ((a.correct + a.mistakes) > 0 && (b.correct + b.mistakes) > 0) {
                                 if (a.correct / (a.correct + a.mistakes) > b.correct / (b.correct + b.mistakes)) {
                                     return 1;
-                                } else if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
+                                } if (b.correct / (b.correct + b.mistakes) > a.correct / (a.correct + a.mistakes)) {
                                     return -1;
-                                } else {
-                                    return 0;
-                                }
-                            } else if ((a.correct + a.mistakes) > 0) {
+                                } 
+                                    return 0;        
+                            } if ((a.correct + a.mistakes) > 0) {
                                 return 1;
-                            } else if ((b.correct + b.mistakes) > 0) {
+                            } if ((b.correct + b.mistakes) > 0) {
                                 return -1;
                             }
+                                return 0;
                         })            
                     } else {
-                         statisticArray.sort((a,b) => (a[sort] > b[sort]) ? 1 : ((b[sort] > a[sort]) ? -1 : 0)); 
+                        statisticArray.sort(function (a,b) {
+                            if ( a[sort] > b[sort] ){
+                              return 1;
+                            }
+                            if ( b[sort] > a[sort] ){
+                              return -1;
+                            }
+                            return 0;
+                          });
+
+                        // statisticArray.sort((a,b) => (a[sort] > b[sort]) ? 1 : ((b[sort] > a[sort]) ? -1 : 0)); 
                     }
                     this.properties.sorted = sort;
                 }          
@@ -495,15 +517,15 @@ const application = {
         },
         repeatWords(){
              let statisticArray; 
-             let parsedArray = [];
-            for (let item of cardsObject[0]) {
-                statisticArray = JSON.parse(localStorage.getItem(item));
-                for (let i = 0; i < cardsObject[0].length; i += 1) {
-                    parsedArray.push(statisticArray[i].mistakes + "+" + statisticArray[i].word + "#" + item);
+             const parsedArray = [];
+            for (let i = 0; i < cardsObject[0].length; i += 1) {
+                statisticArray = JSON.parse(localStorage.getItem(cardsObject[0][i]));
+                for (let j = 0; j < cardsObject[0].length; j += 1) {
+                    parsedArray.push(`${statisticArray[j].mistakes  }+${  statisticArray[j].word  }#${  cardsObject[0][i]}`);
                 }             
             }
-            let sortConstruct = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}); 
-            let clearArray = parsedArray.sort(sortConstruct.compare).splice(-cardsObject[0].length);
+            const sortConstruct = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}); 
+            const clearArray = parsedArray.sort(sortConstruct.compare).splice(-cardsObject[0].length);
             this.elements.repeatWordsArray = clearArray.filter(a=> !a.match(/^0/)).map(a => a.replace(/\d*\+/, "").replace(/#.*/, ""));  
             this.elements.repeatWordsArrayCategories = clearArray.filter(a=> !a.match(/^0/)).map(a => a.replace(/.*#/, ""));
             document.querySelector('.switcher').checked = false;

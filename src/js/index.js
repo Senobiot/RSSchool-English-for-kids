@@ -1,7 +1,7 @@
 import '../css/reset.css';
 import '../css/style.css';
 import '../css/style.scss';
-import header from './header';
+import './header';
 import sideMenu from './side_menu';
 import application from './application';
 
@@ -11,6 +11,7 @@ application.start(0);
 const burgerBtn = document.querySelector('.burgerBtn');
 const sideMenuWrapper = document.querySelector('.sideMenuWrapper');
 const sideMenuBtns = document.querySelectorAll('.sideMenuBtn');
+const content = document.querySelector('.content');
 const cards = document.querySelectorAll('.avers');
 const cardsReverse = document.querySelectorAll('.reverse');
 const rotateBtnS = document.querySelectorAll('.cardRotateBtn');
@@ -18,7 +19,6 @@ const cardWrapperS =  document.querySelectorAll('.cardWrapper');
 const playRepeatBtn = document.querySelector('.playRepeatBtn');
 const switcher =  document.querySelector('.switcher');
 const statistcBtn = document.querySelector('.statisticBtn');
-const repeatWordsBtn = document.querySelector('.statisticRepeatWordsBtn');
 const {body} = document;
 const mask = document.querySelector('.mask');
 const correctAudio = new Audio;
@@ -166,10 +166,14 @@ playRepeatBtn.addEventListener('click', function () {
 statistcBtn.addEventListener('click', function(){
     if (this.classList.contains('active')) {
       this.classList.remove('active');
-      application.elements.content.removeChild(application.elements.content.lastChild); //////// УБРАТЬ ПОТОМ
+      application.elements.content.removeChild(application.elements.content.lastChild); // ////// УБРАТЬ ПОТОМ
     } else {
       application.getStatistic(0, true);
-      this.classList.add('active')
+      this.classList.add('active');
+      // if (window.innerWidth <= 399) {
+      //   content.style.height = '715px';
+      // }
+      console.log(window.innerWidth)
     }
 })
 
