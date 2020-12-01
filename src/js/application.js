@@ -116,6 +116,7 @@ const application = {
     },
     changeCategory(category) {
         if (category === 0) {
+            document.querySelector('.appTitle').textContent = 'English for kids';
             for (let index = 0; index < cardsObject[0].length; index += 1) {
                 this.elements.cards[index].classList.add('cardCategory');
                 this.elements.cards[index].classList.remove('hiddenForRepeat');
@@ -127,6 +128,7 @@ const application = {
             return
         }
         if (category === 20) {
+            document.querySelector('.appTitle').textContent = 'Difficult words';
             this.elements.soundArr = [];
             this.train();
             const currentRepeatWordArray = [];
@@ -271,6 +273,10 @@ const application = {
             winpopup.classList.add('winpopup', 'loser');
             winpopup.textContent = `Not bad, but you made ${this.properties.mistakes} mistakes. Try again!`
         } 
+        const menuBtns = document.querySelectorAll('.sideMenuBtn');
+        for (let index = 0; index < menuBtns.length; index += 1) {
+            menuBtns[index].classList.remove('active');
+        }
        
         setTimeout(() => {
             document.body.appendChild(winpopup);
@@ -286,6 +292,7 @@ const application = {
             this.restart();
         }, 6000);
     },
+    
     restart() {
         document.querySelector('.switcher').checked = false;
         document.querySelector('.switcher').classList.remove('blocked')
@@ -322,6 +329,10 @@ const application = {
         statisticTitle.appendChild(statisticTitleHeader);
         statisticTitle.appendChild(this.statisticRepeatWordsBtn);
         this.statisticRepeatWordsBtn.addEventListener('click', () => {
+            const menuBtns = document.querySelectorAll('.sideMenuBtn');
+            for (let index = 0; index < menuBtns.length; index += 1) {
+                menuBtns[index].classList.remove('active');
+            }
             this.elements.content.removeChild(this.elements.content.lastChild);
             this.elements.statisticBtn.classList.remove("active");
             this.repeatWords();
@@ -357,7 +368,6 @@ const application = {
                         menuElement.addEventListener('click', ()=> {
                             document.querySelector(".statistic").remove();	
                             this.elements.statistic = null;
-                            // this.properties.sorted = 'word';
                             this.getStatistic(category, true, 'word')
                         })
                     }
@@ -446,8 +456,6 @@ const application = {
                         }
                         return 0;
                       });
-
-                    // statisticArray.sort((a,b) => (a[sort] > b[sort]) ? -1 : ((b[sort] > a[sort]) ? 1 : 0)); 
                 }
                 this.properties.sorted = false;
                 } else {
@@ -477,8 +485,6 @@ const application = {
                             }
                             return 0;
                           });
-
-                        // statisticArray.sort((a,b) => (a[sort] > b[sort]) ? 1 : ((b[sort] > a[sort]) ? -1 : 0)); 
                     }
                     this.properties.sorted = sort;
                 }          

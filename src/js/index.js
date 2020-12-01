@@ -8,10 +8,10 @@ import application from './application';
 sideMenu.start()
 application.start(0);
 
+const title = document.querySelector('.appTitle');
 const burgerBtn = document.querySelector('.burgerBtn');
 const sideMenuWrapper = document.querySelector('.sideMenuWrapper');
 const sideMenuBtns = document.querySelectorAll('.sideMenuBtn');
-const content = document.querySelector('.content');
 const cards = document.querySelectorAll('.avers');
 const cardsReverse = document.querySelectorAll('.reverse');
 const rotateBtnS = document.querySelectorAll('.cardRotateBtn');
@@ -53,12 +53,19 @@ for (let index = 0; index < sideMenuBtns.length; index+= 1) {
     document.querySelector('.switcher').checked = false;
     document.querySelector('.switcher').classList.remove('blocked')
     if (index === 0) {
+      for (let idx = 0; idx < sideMenuBtns.length; idx+= 1) {
+        sideMenuBtns[idx].classList.remove("active");
+      }
       application.restart()
     } else { 
+      for (let id = 0; index < sideMenuBtns.length; id += 1) {
+        sideMenuBtns[id].classList.remove("active");
+      }
+      this.classList.add("active");
+      title.textContent = this.textContent;
       application.properties.currentCategory = this.textContent;
       application.changeCategory(index)} 
-  })
-  
+  })  
 }
 
 for (let index = 0; index < cards.length; index+= 1) {
@@ -81,6 +88,7 @@ for (let index = 0; index < cards.length; index+= 1) {
   cards[index].addEventListener('click',function () {
     if (this.classList.contains('cardCategory')) {
       application.properties.currentCategory = this.children[1].textContent;
+      sideMenuBtns[index + 1].classList.add("active");
       application.changeCategory(index + 1);
     } else if (playRepeatBtn.classList.contains('inactive') && !this.classList.contains('rotated')) {
         let localData;
@@ -170,10 +178,6 @@ statistcBtn.addEventListener('click', function(){
     } else {
       application.getStatistic(0, true);
       this.classList.add('active');
-      // if (window.innerWidth <= 399) {
-      //   content.style.height = '715px';
-      // }
-      console.log(window.innerWidth)
     }
 })
 
