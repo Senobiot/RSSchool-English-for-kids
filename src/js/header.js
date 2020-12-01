@@ -32,7 +32,7 @@ header.appendChild(switcher);
  const authorLink = document.createElement('a');
  authorLink.classList.add('footer-author')
  authorLink.href = 'https://github.com/senobiot';
- authorLink.textContent = 'by Senobiot';
+ authorLink.textContent = 'Created by Senobiot';
  const year = document.createElement('div');
  year.classList.add('footer-year');
  year.textContent = '© 2020'
