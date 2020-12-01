@@ -58,8 +58,8 @@ for (let index = 0; index < sideMenuBtns.length; index+= 1) {
       }
       application.restart()
     } else { 
-      for (let id = 0; index < sideMenuBtns.length; id += 1) {
-        sideMenuBtns[id].classList.remove("active");
+      for (let ids = 0; ids < sideMenuBtns.length; ids += 1) {
+        sideMenuBtns[ids].classList.remove("active");
       }
       this.classList.add("active");
       title.textContent = this.textContent;
