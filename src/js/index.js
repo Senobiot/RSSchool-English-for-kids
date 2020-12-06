@@ -1,7 +1,8 @@
 import '../css/reset.css';
 import '../css/style.css';
 import '../css/style.scss';
-import './header';
+import '../css/mediaQueries.scss';
+import './header_footer';
 import sideMenu from './side_menu';
 import application from './application';
 
@@ -41,6 +42,7 @@ mask.addEventListener('click',function () {
 })
 
 for (let index = 0; index < sideMenuBtns.length; index+= 1) {
+  sideMenuBtns[index].style.background = `url('./img/menu_icon_${index}.png') no-repeat 0 50%/1em`;
   sideMenuBtns[index].addEventListener('click',function () {
     if (statistcBtn.classList.contains('active')) {
       statistcBtn.classList.remove("active");
@@ -145,6 +147,7 @@ for (let index = 0; index < cards.length; index+= 1) {
               localData[application.elements.randomArr[application.properties.step]].mistakes += 1;  
               localStorage.setItem(application.properties.currentCategory, JSON.stringify(localData))     
             }
+            
             mistakeAudio.play();
             application.noGuess();
           }
@@ -174,7 +177,7 @@ playRepeatBtn.addEventListener('click', function () {
 statistcBtn.addEventListener('click', function(){
     if (this.classList.contains('active')) {
       this.classList.remove('active');
-      application.elements.content.removeChild(application.elements.content.lastChild); // ////// УБРАТЬ ПОТОМ
+      application.elements.content.removeChild(application.elements.content.lastChild);
     } else {
       application.getStatistic(0, true);
       this.classList.add('active');

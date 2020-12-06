@@ -49,8 +49,6 @@ header.appendChild(switcher);
  footer.appendChild(year);
  footer.appendChild(rsSchoolLink);
  footer.appendChild(authorLink);
- 
-
 
 document.body.appendChild(header);
 document.body.appendChild(footer);

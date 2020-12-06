@@ -4,9 +4,8 @@ const application = {
     elements: {
         statisticPanel: null,
         statisticBtn: null,
-        statisticMistakesBlock: null,
+        statisticAnswersBlock: null,
         statisticMistakesCounter: null,
-        statisticCorrectBlock: null,
         statisticCorrectCounter: null,
         statisticRepeatWordsBtn: null,
         repeatWordsArray: [],
@@ -40,23 +39,21 @@ const application = {
         this.elements.statisticBtn.classList.add('statisticBtn');
         this.elements.statisticBtn.textContent = 'statistic';
         
-        this.elements.statisticMistakesBlock = document.createElement('div');
-        this.elements.statisticMistakesBlock.classList.add('statisticMistakesBlock', 'inactive');
+        this.elements.statisticAnswersBlock = document.createElement('div');
+        this.elements.statisticAnswersBlock.classList.add('statisticAnswersBlock', 'inactive');
+
         this.elements.statisticMistakesCounter = document.createElement('div');
-        this.elements.statisticMistakesCounter.classList.add('statisticMistakesCounter');
+        this.elements.statisticMistakesCounter.classList.add('statisticMistakesCounter', 'inactive');
         this.elements.statisticMistakesCounter.textContent = this.properties.mistakes;
-        this.elements.statisticMistakesBlock.appendChild(this.elements.statisticMistakesCounter)
 
-        this.elements.statisticCorrectBlock = document.createElement('div');
-        this.elements.statisticCorrectBlock.classList.add('statisticCorrectBlock', 'inactive');
         this.elements.statisticCorrectCounter = document.createElement('div');
-        this.elements.statisticCorrectCounter.classList.add('statisticCorrectCounter');
+        this.elements.statisticCorrectCounter.classList.add('statisticCorrectCounter', 'inactive');
         this.elements.statisticCorrectCounter.textContent = this.properties.correctAnswers;
-        this.elements.statisticCorrectBlock.appendChild(this.elements.statisticCorrectCounter)
 
-        this.elements.statisticPanel.appendChild(this.elements.statisticMistakesBlock);
+        this.elements.statisticPanel.appendChild(this.elements.statisticAnswersBlock);
+        this.elements.statisticPanel.appendChild(this.elements.statisticMistakesCounter);
         this.elements.statisticPanel.appendChild(this.elements.statisticBtn);
-        this.elements.statisticPanel.appendChild(this.elements.statisticCorrectBlock);
+        this.elements.statisticPanel.appendChild(this.elements.statisticCorrectCounter);
 
         document.body.appendChild(this.elements.statisticPanel);
 
@@ -209,8 +206,9 @@ const application = {
             this.elements.cards[index].classList.add('play');
          }
         this.elements.playRepeatBtn.classList.remove('inactive');
-        this.elements.statisticMistakesBlock.classList.remove('inactive');
-        this.elements.statisticCorrectBlock.classList.remove('inactive');     
+        this.elements.statisticAnswersBlock.classList.remove('inactive');
+        this.elements.statisticMistakesCounter.classList.remove('inactive');
+        this.elements.statisticCorrectCounter.classList.remove('inactive');   
     },
 
     guess() {
@@ -218,7 +216,7 @@ const application = {
         star.classList.add('star');
         this.properties.step += 1;
         this.properties.correctAnswers += 1;
-        this.elements.statisticCorrectBlock.appendChild(star);
+        this.elements.statisticAnswersBlock.prepend(star);
         this.elements.statisticCorrectCounter.innerText = this.properties.correctAnswers;
     },
 
@@ -226,7 +224,7 @@ const application = {
         const star = document.createElement('div');
         star.classList.add('starGrey');
         this.properties.mistakes += 1;
-        this.elements.statisticMistakesBlock.appendChild(star);
+        this.elements.statisticAnswersBlock.prepend(star);
         this.elements.statisticMistakesCounter.innerText = this.properties.mistakes;
     },
 
@@ -240,16 +238,14 @@ const application = {
         this.elements.statisticMistakesCounter.innerText = this.properties.mistakes;
         this.elements.playRepeatBtn.classList.add('inactive');
         this.elements.playRepeatBtn.classList.remove('playing');
-        this.elements.statisticCorrectBlock.classList.add('inactive');
-        this.elements.statisticMistakesBlock.classList.add('inactive');
+        this.elements.statisticAnswersBlock.classList.add('inactive');
+        this.elements.statisticMistakesCounter.classList.add('inactive');
+        this.elements.statisticCorrectCounter.classList.add('inactive');
         for (let index = 0; index < this.elements.cards.length; index+= 1) {
             this.elements.cards[index].classList.remove('play', 'catched');
          }
-         while (this.elements.statisticCorrectBlock.childNodes.length > 1) {
-            this.elements.statisticCorrectBlock.removeChild(this.elements.statisticCorrectBlock.lastChild);
-         }
-         while (this.elements.statisticMistakesBlock.childNodes.length > 1) {
-            this.elements.statisticMistakesBlock.removeChild(this.elements.statisticMistakesBlock.lastChild);
+         while (this.elements.statisticAnswersBlock.childNodes.length > 0) {
+            this.elements.statisticAnswersBlock.removeChild(this.elements.statisticAnswersBlock.lastChild);
          }
     },
     win() {
