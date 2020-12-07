@@ -265,6 +265,9 @@ body {
 	}
 }
 .content {
+    &.cuttered {
+        max-height: 750px;
+    }
     position: relative;
     width: 80%;
        margin: 0 auto;

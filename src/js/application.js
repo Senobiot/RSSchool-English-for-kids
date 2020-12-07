@@ -112,6 +112,7 @@ const application = {
         } 
     },
     changeCategory(category) {
+        this.elements.content.classList.remove('cuttered');
         if (category === 0) {
             document.querySelector('.appTitle').textContent = 'English for kids';
             for (let index = 0; index < cardsObject[0].length; index += 1) {

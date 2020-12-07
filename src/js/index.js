@@ -22,6 +22,7 @@ const switcher =  document.querySelector('.switcher');
 const statistcBtn = document.querySelector('.statisticBtn');
 const {body} = document;
 const mask = document.querySelector('.mask');
+const content = document.querySelector('.content');
 const correctAudio = new Audio;
 const mistakeAudio = new Audio;
 
@@ -177,8 +178,14 @@ playRepeatBtn.addEventListener('click', function () {
 statistcBtn.addEventListener('click', function(){
     if (this.classList.contains('active')) {
       this.classList.remove('active');
+      if (window.innerWidth < 400) {
+        content.classList.remove('cuttered');
+      }
       application.elements.content.removeChild(application.elements.content.lastChild);
     } else {
+      if (window.innerWidth < 400) {
+        content.classList.add('cuttered');
+      }
       application.getStatistic(0, true);
       this.classList.add('active');
     }
@@ -189,5 +196,13 @@ switcher.addEventListener('click', function () {
       application.train();
   } else {
     application.play();
+  }
+})
+window.addEventListener('resize', function(){
+ if (window.innerWidth >= 400) {
+  content.classList.remove('cuttered');
+ }
+  if (window.innerWidth < 400 && statistcBtn.classList.contains('active')) {
+    content.classList.add('cuttered');
   }
 })
