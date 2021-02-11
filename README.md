@@ -1,2 +1,6 @@
-# senobiot-JS2020Q3
-Private repository for @senobiot
+## RSSchool-English-for-kids
+
+ [Deploy LINK](https://senobiot.github.io/RSSchool-English-for-kids/english/)
+ 
+Screenshot: ![](https://i.imgur.com/IZoAiuZ.jpg)
+
